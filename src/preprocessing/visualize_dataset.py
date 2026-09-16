@@ -1,45 +1,29 @@
 """
-DocForensics AI — Multi-Source Forensic Visualizer
-Renders side-by-side verification figures across both Public (RealText-V2) and Synthetic benchmarks:
-1. Document Image (RGB)
-2. Ground-Truth Binary Mask
-3. Forensic Tampering Overlay
-4. Error Level Analysis (ELA)
-Saves visual inspection grid to outputs/sample_dataset_verification.png.
+DocForensics AI — Multi-Panel Forensic Dataset Visualizer (Phase 3)
+Renders side-by-side forensic verification grids:
+1. ORIGINAL (Clean Source Document)
+2. TAMPERED (Manipulated Document Image)
+3. GROUND-TRUTH MASK (Binary Tampering Mask, 0=untouched, 255=tampered)
+4. MASK OVERLAY (Semi-transparent red forensic highlight with contour borders)
+
+Saves verification grid to outputs/sample_dataset_verification.png.
 """
 
-import io
+import ast
 import random
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
-from PIL import Image, ImageChops, ImageEnhance
+from PIL import Image
 import cv2
 
 from config import BASE_DIR, METADATA_CSV, OUTPUT_DIR, cfg
+from src.preprocessing.tampering_engine import MANIPULATION_CATEGORIES
 
 
-def compute_ela_image(image_path: Path, quality: int = 90, scale: float = 15.0) -> np.ndarray:
-    """Compute Error Level Analysis (ELA) image to highlight compression discrepancies."""
-    orig = Image.open(image_path).convert("RGB")
-    buf = io.BytesIO()
-    orig.save(buf, "JPEG", quality=quality)
-    buf.seek(0)
-    resaved = Image.open(buf)
-
-    diff = ImageChops.difference(orig, resaved)
-    extrema = diff.getextrema()
-    max_diff = max([ex[1] for ex in extrema])
-    if max_diff == 0:
-        max_diff = 1
-    scale_factor = 255.0 / max_diff * (scale / 10.0)
-    diff = ImageEnhance.Brightness(diff).enhance(scale_factor)
-    return np.array(diff)
-
-
-def create_forensic_overlay(image_arr: np.ndarray, mask_arr: np.ndarray) -> np.ndarray:
-    """Overlay semi-transparent red highlight over tampered regions."""
+def create_forensic_overlay(image_arr: np.ndarray, mask_arr: np.ndarray, bbox: list = None) -> np.ndarray:
+    """Overlay semi-transparent red highlight over tampered regions with contour boundaries."""
     overlay = image_arr.copy()
     if mask_arr.max() == 0:
         cv2.putText(overlay, "AUTHENTIC", (30, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (22, 163, 74), 3)
@@ -56,6 +40,11 @@ def create_forensic_overlay(image_arr: np.ndarray, mask_arr: np.ndarray) -> np.n
 
     contours, _ = cv2.findContours(mask_arr, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(overlay, contours, -1, (220, 38, 38), 3)
+    
+    if bbox and len(bbox) == 4 and any(b > 0 for b in bbox):
+        bx1, by1, bx2, by2 = bbox
+        cv2.rectangle(overlay, (bx1, by1), (bx2, by2), (255, 165, 0), 2)
+
     cv2.putText(overlay, "TAMPERED", (30, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (220, 38, 38), 3)
     return overlay
 
@@ -63,81 +52,131 @@ def create_forensic_overlay(image_arr: np.ndarray, mask_arr: np.ndarray) -> np.n
 def visualize_dataset_samples(
     metadata_path: Path = METADATA_CSV,
     output_path: Path = OUTPUT_DIR / "sample_dataset_verification.png",
+    num_samples: int = 10,
     seed: int = 42,
 ) -> Path:
-    """Sample documents from both public and synthetic sources and render verification grid."""
+    """
+    Renders 4-panel visual verification grid:
+    ORIGINAL | TAMPERED | GROUND-TRUTH MASK | MASK OVERLAY
+    covering diverse manipulation categories.
+    """
     if not metadata_path.exists():
         raise FileNotFoundError(f"Metadata file {metadata_path} not found. Run dataset builder first.")
 
     df = pd.read_csv(metadata_path)
     random.seed(seed)
 
-    # Sample balanced set:
-    # 2 Public Tampered + 1 Public Authentic + 2 Synthetic Tampered + 1 Synthetic Authentic
-    pub_tamp = df[(df["data_source"] == "public_realtext_v2") & (df["is_tampered"] == 1)].sample(min(2, len(df[(df["data_source"] == "public_realtext_v2") & (df["is_tampered"] == 1)])), random_state=seed)
-    pub_auth = df[(df["data_source"] == "public_realtext_v2") & (df["is_tampered"] == 0)].sample(min(1, len(df[(df["data_source"] == "public_realtext_v2") & (df["is_tampered"] == 0)])), random_state=seed)
-    syn_tamp = df[(df["data_source"] == "synthetic_docforensics") & (df["is_tampered"] == 1)].sample(min(2, len(df[(df["data_source"] == "synthetic_docforensics") & (df["is_tampered"] == 1)])), random_state=seed)
-    syn_auth = df[(df["data_source"] == "synthetic_docforensics") & (df["is_tampered"] == 0)].sample(min(1, len(df[(df["data_source"] == "synthetic_docforensics") & (df["is_tampered"] == 0)])), random_state=seed)
+    # Pick samples across different manipulation categories
+    sampled_records = []
+    syn_tampered = df[(df["source_type"] == "synthetic") & (df["is_tampered"] == 1)]
+    
+    for cat in MANIPULATION_CATEGORIES:
+        cat_matches = syn_tampered[syn_tampered["manipulation_type"] == cat]
+        if len(cat_matches) > 0:
+            sampled_records.append(cat_matches.sample(1, random_state=seed).iloc[0])
 
-    sampled_df = pd.concat([pub_tamp, pub_auth, syn_tamp, syn_auth]).reset_index(drop=True)
+    # Also add 1 authentic sample and 1 public sample
+    syn_auth = df[(df["source_type"] == "synthetic") & (df["is_tampered"] == 0)]
+    if len(syn_auth) > 0:
+        sampled_records.append(syn_auth.sample(1, random_state=seed).iloc[0])
+
+    pub_samples = df[df["source_type"] == "public"]
+    if len(pub_samples) > 0:
+        sampled_records.append(pub_samples.sample(1, random_state=seed).iloc[0])
+
+    sampled_df = pd.DataFrame(sampled_records)
 
     rows = len(sampled_df)
-    cols = 4  # [Original, Mask, Forensic Overlay, ELA Residual]
-    fig, axes = plt.subplots(rows, cols, figsize=(20, 4.5 * rows))
+    cols = 4  # [ORIGINAL, TAMPERED, GROUND-TRUTH MASK, MASK OVERLAY]
+    fig, axes = plt.subplots(rows, cols, figsize=(22, 5.0 * rows))
     if rows == 1:
         axes = np.expand_dims(axes, 0)
 
-    fig.suptitle("DocForensics AI — Public & Synthetic Dataset Forensic Inspection", fontsize=18, fontweight="bold", y=0.995)
+    fig.suptitle(
+        "DocForensics AI — Phase 3 Synthetic & Public Tampering Verification Grid\n"
+        "[ORIGINAL | TAMPERED | GROUND-TRUTH MASK | MASK OVERLAY]",
+        fontsize=18,
+        fontweight="bold",
+        y=0.995,
+    )
 
     col_titles = [
-        "1. Document Image (RGB)",
-        "2. Ground-Truth Binary Mask",
-        "3. Forensic Tamper Overlay",
-        "4. Error Level Analysis (ELA)",
+        "1. ORIGINAL (Clean Source)",
+        "2. TAMPERED (Manipulated Image)",
+        "3. GROUND-TRUTH MASK (0=Clean, 255=Tampered)",
+        "4. FORENSIC MASK OVERLAY",
     ]
 
     for c, title in enumerate(col_titles):
         axes[0, c].set_title(title, fontsize=13, fontweight="bold", pad=12)
 
-    for r_idx, row in sampled_df.iterrows():
-        img_p = BASE_DIR / row["image_path"]
-        mask_p = BASE_DIR / row["mask_path"]
+    for r_idx, (_, row) in enumerate(sampled_df.iterrows()):
+        orig_p = BASE_DIR / str(row.get("original_path", ""))
+        tamp_p = BASE_DIR / str(row.get("tampered_path", row.get("image_path", "")))
+        mask_p = BASE_DIR / str(row["mask_path"])
 
-        img_bgr = cv2.imread(str(img_p))
-        img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+        # 1. Original Image
+        if orig_p.exists():
+            orig_bgr = cv2.imread(str(orig_p))
+            orig_rgb = cv2.cvtColor(orig_bgr, cv2.COLOR_BGR2RGB)
+        else:
+            orig_rgb = np.zeros((600, 800, 3), dtype=np.uint8)
+
+        # 2. Tampered Image
+        tamp_bgr = cv2.imread(str(tamp_p))
+        tamp_rgb = cv2.cvtColor(tamp_bgr, cv2.COLOR_BGR2RGB)
+
+        # 3. Ground-Truth Mask
         mask_gray = cv2.imread(str(mask_p), cv2.IMREAD_GRAYSCALE)
 
-        overlay = create_forensic_overlay(img_rgb, mask_gray)
-        ela_img = compute_ela_image(img_p)
+        # Bounding box
+        bbox = None
+        if "bounding_box" in row and pd.notna(row["bounding_box"]):
+            try:
+                b_val = row["bounding_box"]
+                bbox = ast.literal_eval(b_val) if isinstance(b_val, str) else b_val
+            except Exception:
+                bbox = None
 
-        # Plot 1: RGB
-        axes[r_idx, 0].imshow(img_rgb)
+        # 4. Forensic Overlay
+        overlay = create_forensic_overlay(tamp_rgb, mask_gray, bbox=bbox)
+
+        # Plot 1: ORIGINAL
+        axes[r_idx, 0].imshow(orig_rgb)
         axes[r_idx, 0].axis("off")
-        src_label = f"SOURCE: {row['data_source'].upper()} | Split: {row['split'].upper()}\nID: {row['sample_id']}"
-        axes[r_idx, 0].text(10, img_rgb.shape[0] - 20, src_label, color="white", fontsize=8.5,
+        orig_label = f"DOC ID: {row['source_document_id']}\nType: {row.get('doc_type', 'N/A')}"
+        axes[r_idx, 0].text(10, orig_rgb.shape[0] - 20, orig_label, color="white", fontsize=8.5,
                             bbox=dict(boxstyle="round,pad=0.3", fc="black", alpha=0.75))
 
-        # Plot 2: Mask
-        axes[r_idx, 1].imshow(mask_gray, cmap="gray", vmin=0, vmax=255)
+        # Plot 2: TAMPERED
+        axes[r_idx, 1].imshow(tamp_rgb)
         axes[r_idx, 1].axis("off")
-        tech_lbl = f"Technique: {row['tampering_type'].upper()}" if row['is_tampered'] == 1 else "AUTHENTIC (Zero Mask)"
-        axes[r_idx, 1].text(10, mask_gray.shape[0] - 20, tech_lbl, color="cyan", fontsize=8.5,
+        tamp_label = f"MANIPULATION: {row['manipulation_type'].upper()}\nSplit: {row.get('dataset_split', 'train').upper()}"
+        axes[r_idx, 1].text(10, tamp_rgb.shape[0] - 20, tamp_label, color="yellow", fontsize=8.5,
                             bbox=dict(boxstyle="round,pad=0.3", fc="black", alpha=0.75))
 
-        # Plot 3: Overlay
-        axes[r_idx, 2].imshow(overlay)
+        # Plot 3: MASK
+        axes[r_idx, 2].imshow(mask_gray, cmap="gray", vmin=0, vmax=255)
         axes[r_idx, 2].axis("off")
+        pix_cnt = row.get("tampered_pixel_count", int(np.sum(mask_gray > 0)))
+        area_pct = row.get("tampered_area_percentage", 0.0)
+        mask_label = f"Pixels: {pix_cnt:,} ({area_pct:.2f}%)\nValues: [{mask_gray.min()}, {mask_gray.max()}]"
+        axes[r_idx, 2].text(10, mask_gray.shape[0] - 20, mask_label, color="cyan", fontsize=8.5,
+                            bbox=dict(boxstyle="round,pad=0.3", fc="black", alpha=0.75))
 
-        # Plot 4: ELA
-        axes[r_idx, 3].imshow(ela_img)
+        # Plot 4: OVERLAY
+        axes[r_idx, 3].imshow(overlay)
         axes[r_idx, 3].axis("off")
+        over_label = f"BBox: {bbox if bbox else 'N/A'}"
+        axes[r_idx, 3].text(10, overlay.shape[0] - 20, over_label, color="white", fontsize=8.5,
+                            bbox=dict(boxstyle="round,pad=0.3", fc="darkred", alpha=0.75))
 
     plt.tight_layout(rect=[0, 0, 1, 0.98])
     output_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_path, dpi=180, bbox_inches="tight")
     plt.close()
 
-    print(f"[+] Multi-source forensic verification visual saved to: {output_path}")
+    print(f"[+] Multi-panel forensic verification grid saved to: {output_path}")
     return output_path
 
 

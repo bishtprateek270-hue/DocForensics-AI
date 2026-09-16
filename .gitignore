@@ -80,12 +80,15 @@ data/processed/*
 !data/processed/.gitkeep
 data/synthetic/*
 !data/synthetic/.gitkeep
+!data/synthetic/metadata.csv
 data/train/*
 !data/train/.gitkeep
 data/val/*
 !data/val/.gitkeep
 data/test/*
 !data/test/.gitkeep
+!data/metadata.csv
+!data/dataset_summary.json
 checkpoints/
 *.pth
 *.pt

@@ -1,73 +1,72 @@
 {
   "project_name": "DocForensics AI",
-  "dataset_name": "DocForensics-Integrated-Benchmark-v1",
-  "total_samples": 650,
+  "phase": "Phase 3: High-Quality Synthetic Document Tampering Generation",
+  "dataset_name": "DocForensics-Synthetic-Benchmark-v1",
+  "total_samples": 800,
+  "total_masks": 800,
+  "clean_source_documents": 200,
   "total_document_families": 200,
-  "data_sources": {
-    "public_realtext_v2": {
-      "total_samples": 50,
-      "percentage_of_dataset": 7.69,
-      "genuine_samples": 20,
-      "tampered_samples": 30,
-      "unique_families": 50,
-      "license": "CC-BY-NC-4.0",
-      "splits": {
-        "train": 35,
-        "val": 8,
-        "test": 7
-      }
-    },
-    "synthetic_docforensics": {
-      "total_samples": 600,
-      "percentage_of_dataset": 92.31,
-      "genuine_samples": 150,
-      "tampered_samples": 450,
-      "unique_families": 150,
-      "license": "MIT",
-      "splits": {
-        "train": 420,
-        "test": 92,
-        "val": 88
-      }
+  "synthetic_dataset": {
+    "total_samples": 750,
+    "authentic_samples": 150,
+    "tampered_samples": 600,
+    "clean_source_originals": 150,
+    "manipulation_categories_supported": 10,
+    "manipulation_category_counts": {
+      "text_replacement": 60,
+      "number_amount_replacement": 60,
+      "date_replacement": 60,
+      "copy_move_intra": 60,
+      "copy_paste_inter": 60,
+      "signature_manipulation": 60,
+      "photo_replacement": 60,
+      "stamp_seal_manipulation": 60,
+      "region_removal": 60,
+      "local_inpainting": 60
     }
   },
-  "class_distribution": {
-    "genuine": 170,
-    "genuine_pct": 26.15,
-    "tampered": 480,
-    "tampered_pct": 73.85
+  "public_dataset": {
+    "total_samples": 50,
+    "authentic_samples": 20,
+    "tampered_samples": 30,
+    "source_name": "RealText-V2 (ACM MM 2026 GenText-Forensics Grand Challenge)",
+    "license": "CC-BY-NC 4.0"
   },
   "split_distribution": {
-    "train_samples": 455,
-    "train_pct": 70.0,
-    "train_families": 140,
-    "val_samples": 96,
-    "val_pct": 14.77,
-    "val_families": 30,
-    "test_samples": 99,
-    "test_pct": 15.23,
-    "test_families": 30
+    "train": {
+      "samples": 560,
+      "percentage": 70.0,
+      "families": 140
+    },
+    "val": {
+      "samples": 118,
+      "percentage": 14.75,
+      "families": 30
+    },
+    "test": {
+      "samples": 122,
+      "percentage": 15.25,
+      "families": 30
+    }
   },
-  "document_types": {
-    "invoice": 120,
-    "id_card": 120,
-    "contract": 120,
-    "certificate": 120,
-    "receipt": 120,
-    "public_document": 50
-  },
-  "tampering_techniques": {
-    "none": 170,
-    "splicing": 150,
-    "copy_move": 150,
-    "erasure_inpainting": 150,
+  "all_manipulation_counts": {
+    "text_replacement": 60,
+    "number_amount_replacement": 60,
+    "date_replacement": 60,
+    "copy_move_intra": 60,
+    "copy_paste_inter": 60,
+    "signature_manipulation": 60,
+    "photo_replacement": 60,
+    "stamp_seal_manipulation": 60,
+    "region_removal": 60,
+    "local_inpainting": 60,
     "public_realtext_tampered": 30
   },
-  "mask_statistics": {
-    "mean_tampered_area_pct": 1.11,
-    "median_tampered_area_pct": 0.99,
-    "min_tampered_area_pct": 0.19,
-    "max_tampered_area_pct": 8.27,
-    "std_tampered_area_pct": 0.73
+  "mask_area_statistics": {
+    "mean_tampered_area_pct": 1.8408,
+    "median_tampered_area_pct": 1.1604,
+    "min_tampered_area_pct": 0.1888,
+    "max_tampered_area_pct": 9.2814,
+    "std_tampered_area_pct": 1.7971
   }
 }

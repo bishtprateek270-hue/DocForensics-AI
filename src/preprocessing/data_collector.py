@@ -12,10 +12,10 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import cv2
 
-from config import RAW_DATA_DIR, cfg
+from config import SYNTHETIC_ORIGINALS_DIR, cfg
 
 
-AUTHENTIC_RAW_DIR = RAW_DATA_DIR / "synthetic"
+AUTHENTIC_RAW_DIR = SYNTHETIC_ORIGINALS_DIR
 AUTHENTIC_RAW_DIR.mkdir(parents=True, exist_ok=True)
 
 
