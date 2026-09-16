@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { ForensicReport, SuspiciousRegion } from "../../types/forensic";
 import { getAssetUrl } from "../../lib/api";
-import { ZoomIn, ZoomOut, Maximize2, RotateCcw, Eye, Layers, Flame } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCcw, Eye, Layers, Flame } from "lucide-react";
 
 interface DocumentViewerProps {
   report: ForensicReport;
@@ -30,89 +30,89 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   const handleResetZoom = () => setZoomLevel(1);
 
   return (
-    <div className="bg-white rounded-xl border border-surface-200 overflow-hidden shadow-card flex flex-col h-full">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col h-full">
       {/* Top Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 border-b border-surface-200 bg-surface-50 text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-slate-200 bg-slate-50 text-xs">
         {/* Segmented View Mode Controls */}
-        <div className="inline-flex rounded-lg p-0.5 bg-surface-200 border border-surface-300">
+        <div className="inline-flex rounded-xl p-1 bg-slate-200 border border-slate-300">
           <button
             onClick={() => setViewMode("overlay")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-semibold transition-all ${
               viewMode === "overlay"
-                ? "bg-white text-surface-900 shadow-subtle font-semibold"
-                : "text-slate-600 hover:text-surface-900"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Regions Overlay</span>
+            <Layers className="w-4 h-4" />
+            <span>Inspection Overlay</span>
           </button>
           <button
             onClick={() => setViewMode("heatmap")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-semibold transition-all ${
               viewMode === "heatmap"
-                ? "bg-white text-surface-900 shadow-subtle font-semibold"
-                : "text-slate-600 hover:text-surface-900"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Flame className="w-3.5 h-3.5 text-red-500" />
+            <Flame className="w-4 h-4 text-red-500" />
             <span>Heatmap</span>
           </button>
           <button
             onClick={() => setViewMode("original")}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-semibold transition-all ${
               viewMode === "original"
-                ? "bg-white text-surface-900 shadow-subtle font-semibold"
-                : "text-slate-600 hover:text-surface-900"
+                ? "bg-white text-slate-900 shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-4 h-4" />
             <span>Original</span>
           </button>
         </div>
 
         {/* Heatmap Opacity Slider (Only in heatmap mode) */}
         {viewMode === "heatmap" && (
-          <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-md border border-surface-200 shadow-subtle">
-            <span className="text-slate-500 font-medium text-[11px]">Heatmap Opacity:</span>
+          <div className="flex items-center gap-2.5 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+            <span className="text-slate-600 font-medium text-xs">Heatmap Intensity:</span>
             <input
               type="range"
               min="0"
               max="100"
               value={heatmapOpacity}
               onChange={(e) => setHeatmapOpacity(parseInt(e.target.value))}
-              className="w-24 h-1.5 bg-surface-200 rounded-lg appearance-none cursor-pointer accent-red-600"
+              className="w-28 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600"
             />
-            <span className="font-mono text-[11px] text-slate-700 w-8 text-right">
+            <span className="font-mono text-xs text-slate-800 font-semibold w-8 text-right">
               {heatmapOpacity}%
             </span>
           </div>
         )}
 
         {/* Zoom Controls */}
-        <div className="flex items-center gap-1 bg-white rounded-md border border-surface-200 p-0.5 shadow-subtle">
+        <div className="flex items-center gap-1 bg-white rounded-xl border border-slate-200 p-1 shadow-sm">
           <button
             onClick={handleZoomOut}
             title="Zoom Out"
-            className="p-1 text-slate-600 hover:text-surface-900 hover:bg-surface-100 rounded"
+            className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            <ZoomOut className="w-3.5 h-3.5" />
+            <ZoomOut className="w-4 h-4" />
           </button>
-          <span className="px-1.5 font-mono text-[11px] text-slate-700">
+          <span className="px-2 font-mono text-xs text-slate-700 font-semibold">
             {Math.round(zoomLevel * 100)}%
           </span>
           <button
             onClick={handleZoomIn}
             title="Zoom In"
-            className="p-1 text-slate-600 hover:text-surface-900 hover:bg-surface-100 rounded"
+            className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            <ZoomIn className="w-3.5 h-3.5" />
+            <ZoomIn className="w-4 h-4" />
           </button>
           <button
             onClick={handleResetZoom}
             title="Reset Zoom"
-            className="p-1 text-slate-600 hover:text-surface-900 hover:bg-surface-100 rounded border-l border-surface-200 ml-1"
+            className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg border-l border-slate-200 ml-1 transition-colors"
           >
-            <RotateCcw className="w-3 h-3" />
+            <RotateCcw className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
@@ -120,7 +120,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
       {/* Main Document Canvas Viewport */}
       <div
         ref={containerRef}
-        className="relative flex-1 min-h-[440px] max-h-[640px] bg-slate-900/5 overflow-auto p-4 flex items-center justify-center select-none"
+        className="relative flex-1 min-h-[500px] max-h-[680px] bg-slate-900/5 overflow-auto p-6 flex items-center justify-center select-none"
       >
         <div
           className="relative inline-block transition-transform duration-100 ease-out origin-center"
@@ -130,15 +130,15 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
           <img
             src={getAssetUrl(report.image_url)}
             alt="Analyzed document"
-            className="block max-h-[560px] max-w-full w-auto object-contain rounded border border-surface-300 shadow-elevation bg-white"
+            className="block max-h-[600px] max-w-full w-auto object-contain rounded-lg border border-slate-300 shadow-md bg-white"
           />
 
           {/* Heatmap Overlay (Faded on top of Original) */}
           {viewMode === "heatmap" && (
             <img
               src={getAssetUrl(report.heatmap_url)}
-              alt="Forensic Heatmap"
-              className="absolute inset-0 w-full h-full object-contain pointer-events-none rounded transition-opacity duration-150"
+              alt="Tampering Heatmap"
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none rounded-lg transition-opacity duration-150"
               style={{ opacity: heatmapOpacity / 100 }}
             />
           )}
@@ -163,8 +163,8 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
                   }}
                   className={`absolute cursor-pointer transition-all duration-150 rounded-sm ${
                     isSelected
-                      ? "border-2 border-red-600 bg-red-500/25 shadow-glow-tamper ring-2 ring-red-400 z-30"
-                      : "border-2 border-red-500/80 bg-red-500/15 hover:bg-red-500/30 hover:border-red-600 z-20"
+                      ? "border-2 border-red-600 bg-red-500/25 ring-4 ring-red-400/40 z-30"
+                      : "border-2 border-red-500/90 bg-red-500/15 hover:bg-red-500/30 hover:border-red-600 z-20"
                   }`}
                   style={{
                     left: `${leftPct}%`,
@@ -175,13 +175,13 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
                 >
                   {/* Region ID Badge */}
                   <span
-                    className={`absolute -top-5 left-0 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold tracking-tight shadow-subtle ${
+                    className={`absolute -top-5 left-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-tight shadow-sm ${
                       isSelected
                         ? "bg-red-700 text-white ring-1 ring-red-800"
                         : "bg-red-600 text-white"
                     }`}
                   >
-                    R#{region.region_id}
+                    Area #{region.region_id}
                   </span>
                 </div>
               );
@@ -190,18 +190,18 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
       </div>
 
       {/* Viewer Footer Bar */}
-      <div className="px-4 py-2 bg-surface-50 border-t border-surface-200 text-[11px] text-slate-500 flex items-center justify-between">
+      <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span>
-            Resolution: <strong className="text-slate-700 font-mono">{origW} &times; {origH} px</strong>
+            Dimensions: <strong className="text-slate-800 font-mono">{origW} &times; {origH} px</strong>
           </span>
           <span>&bull;</span>
           <span>
-            Suspicious Regions: <strong className="text-slate-700 font-mono">{report.suspicious_region_count}</strong>
+            Flagged Areas: <strong className="text-slate-800 font-mono">{report.suspicious_region_count}</strong>
           </span>
         </div>
-        <div className="text-slate-400">
-          Click any highlighted box to inspect OCR &amp; tampering scores
+        <div className="text-slate-400 hidden sm:block">
+          Click highlighted areas to inspect text evidence &amp; scores
         </div>
       </div>
     </div>

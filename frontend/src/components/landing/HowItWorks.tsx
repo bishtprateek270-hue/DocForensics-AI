@@ -1,81 +1,74 @@
 import React from "react";
-import { UploadCloud, Cpu, Crosshair, Type, FileSpreadsheet } from "lucide-react";
+import { UploadCloud, Search, CheckCircle2, FileText } from "lucide-react";
 
 const steps = [
   {
     step: "01",
     icon: UploadCloud,
-    title: "Document Ingestion",
+    title: "Upload Document",
     description:
-      "Upload image formats (JPG, PNG) or multi-page PDFs. Vector PDF documents are rasterized at high DPI preserving pixel alignment and coordinate mapping.",
+      "Upload your document in PNG, JPG, or PDF format. Vector PDFs are automatically converted at high resolution for precise inspection.",
   },
   {
     step: "02",
-    icon: Cpu,
-    title: "Dual-Stream Extraction",
+    icon: Search,
+    title: "AI Forensic Analysis",
     description:
-      "Simultaneously extracts RGB spatial semantics via ResNet50 and noise residual inconsistencies via 30 Steganographic Residual Analysis (SRM) high-pass kernels.",
+      "The system inspects sub-pixel visual patterns and noise consistency to spot signs of splicing, inpainting, or digital tampering.",
   },
   {
     step: "03",
-    icon: Crosshair,
-    title: "Tampering Localization",
+    icon: CheckCircle2,
+    title: "Inspect Suspicious Regions",
     description:
-      "An adaptive convolutional gating module fuses spatial and noise features to generate a high-resolution pixel-level probability map (0.0 – 1.0).",
+      "View exact highlighted bounding boxes, interactive heatmaps with opacity controls, and localized tampering scores.",
   },
   {
     step: "04",
-    icon: Type,
-    title: "OCR Evidence Extraction",
+    icon: FileText,
+    title: "View Forensic Report",
     description:
-      "PyTorch-based CRAFT text detection and CRNN recognition map localized tampering bounding boxes to actual document text, amounts, and dates.",
-  },
-  {
-    step: "05",
-    icon: FileSpreadsheet,
-    title: "Structured Forensic Report",
-    description:
-      "Generates an interactive verification workspace with heatmap cross-fading, per-region statistics, OCR evidence tables, and exportable JSON artifacts.",
+      "Review extracted OCR text evidence, inspect affected document areas, and export a complete forensic audit report.",
   },
 ];
 
 export const HowItWorks: React.FC = () => {
   return (
-    <section id="how-it-works" className="py-16 md:py-20 border-b border-surface-200 bg-surface-50">
+    <section id="how-it-works" className="py-16 md:py-24 border-b border-slate-200 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-12">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Verification Pipeline
+        <div className="max-w-3xl mb-14">
+          <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">
+            Simple 4-Step Process
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-surface-900 tracking-tight">
-            How DocForensics AI Analyzes Documents
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            How DocForensics AI Works
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 mt-2">
-            A deterministic, multi-modal forensic inspection process designed to expose subtle digital alterations without relying on black-box claims.
+          <p className="text-base sm:text-lg text-slate-600 mt-3">
+            An automated forensic verification pipeline designed to spot subtle document alterations quickly and accurately.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((s) => {
             const Icon = s.icon;
             return (
               <div
                 key={s.step}
-                className="bg-white rounded-lg border border-surface-200 p-5 shadow-subtle flex flex-col justify-between relative hover:border-surface-300 transition-colors"
+                className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-mono text-xs font-bold text-slate-400">
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="font-mono text-sm font-extrabold text-slate-400 bg-slate-100 px-2.5 py-1 rounded">
                       {s.step}
                     </span>
-                    <div className="w-8 h-8 rounded bg-surface-100 flex items-center justify-center text-surface-900">
-                      <Icon className="w-4 h-4 text-slate-700" />
+                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                      <Icon className="w-5 h-5" />
                     </div>
                   </div>
-                  <h3 className="font-semibold text-sm text-surface-900 mb-2">
+                  <h3 className="font-bold text-base text-slate-900 mb-2">
                     {s.title}
                   </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
+                  <p className="text-sm text-slate-600 leading-relaxed">
                     {s.description}
                   </p>
                 </div>

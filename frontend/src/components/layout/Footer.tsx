@@ -1,62 +1,64 @@
 import React from "react";
-import { ShieldAlert, Cpu, FileCheck2, Terminal } from "lucide-react";
+import Link from "next/link";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="w-full border-t border-surface-200 bg-surface-50 text-slate-600 text-xs py-10 mt-20">
+    <footer id="about" className="w-full border-t border-slate-200 bg-slate-50 text-slate-600 text-sm py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-surface-900 text-white flex items-center justify-center font-bold text-xs">
+          <div className="md:col-span-2 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
                 DF
               </div>
-              <span className="font-semibold text-sm text-surface-900">
+              <span className="font-bold text-base text-slate-900">
                 DocForensics AI
               </span>
             </div>
-            <p className="text-slate-500 leading-relaxed">
-              Research & production document tampering localization suite combining RGB Spatial Analysis and SRM Noise Residual Fusion.
+            <p className="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-md">
+              AI-powered document tampering detection and localization platform. Inspects visual textures, noise residuals, and text structure to assist investigators and organizations in spotting digital alterations.
             </p>
           </div>
 
           <div>
-            <h4 className="font-semibold text-surface-900 mb-2">Model Specifications</h4>
-            <ul className="space-y-1.5 text-slate-500 font-mono text-[11px]">
-              <li>Dual-Stream DeepLabV3+ (ResNet50)</li>
-              <li>Spatial: 3-ch RGB Image</li>
-              <li>Forensic: 30-filter SRM Kernels</li>
-              <li>Fusion: Adaptive Conv Gate + Decoder</li>
-              <li>Checkpoint: Phase 7 (Val Dice 0.719)</li>
+            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">
+              Navigation
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-500">
+              <li>
+                <a href="#workspace" className="hover:text-slate-900 transition-colors">
+                  Document Analysis
+                </a>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-slate-900 transition-colors">
+                  How It Works
+                </a>
+              </li>
+              <li>
+                <a href="#capabilities" className="hover:text-slate-900 transition-colors">
+                  Inspection Capabilities
+                </a>
+              </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-surface-900 mb-2">Inference & OCR</h4>
-            <ul className="space-y-1.5 text-slate-500 text-[11px]">
-              <li>PyTorch CUDA 12.8 / RTX 5050 8GB</li>
-              <li>EasyOCR PyTorch (CRAFT + CRNN)</li>
-              <li>Spatial IoU Region-Text Association</li>
-              <li>PyMuPDF High-DPI Page Rendering</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-surface-900 mb-2">Responsible Usage</h4>
-            <p className="text-slate-500 leading-relaxed text-[11px]">
-              DocForensics AI identifies pixel-level manipulation artifacts. It does not certify legal document authenticity or prove legal intent. All suspicious findings should undergo human forensic verification.
+            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider mb-3">
+              Disclaimer
+            </h4>
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Results indicate potential visual manipulation and should not be treated as legal proof of document authenticity. Always conduct manual inspection for legal or official proceedings.
             </p>
           </div>
         </div>
 
-        <div className="pt-6 border-t border-surface-200 flex flex-col sm:flex-row items-center justify-between text-slate-400 text-[11px] gap-2">
-          <span>&copy; {new Date().getFullYear()} DocForensics AI. Production Forensic Pipeline (Phase 9).</span>
+        <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-slate-400 text-xs gap-3">
+          <span>&copy; {new Date().getFullYear()} DocForensics AI. All rights reserved.</span>
           <div className="flex items-center gap-4">
-            <span>FastAPI 0.115</span>
+            <span>Secure Verification</span>
             <span>&bull;</span>
-            <span>Next.js 14</span>
-            <span>&bull;</span>
-            <span>PyTorch 2.11+cu128</span>
+            <span>Privacy-First Ingestion</span>
           </div>
         </div>
       </div>

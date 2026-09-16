@@ -1,84 +1,70 @@
 import React from "react";
-import { CheckCircle2, AlertTriangle, Hash, Calendar, PenTool, Image as ImageIcon, Stamp, Eraser } from "lucide-react";
+import { Hash, Calendar, PenTool, Image as ImageIcon, Stamp, Eraser, AlertCircle } from "lucide-react";
 
 const capabilities = [
   {
     icon: Hash,
-    title: "Financial & Number Replacement",
-    description: "Detects modified invoice amounts, bank balances, tax totals, and salary figures spliced into existing layout backgrounds.",
-    supported: true,
+    title: "Financial & Number Edits",
+    description: "Detects modified invoice amounts, changed bank account numbers, altered prices, and replaced tax figures.",
   },
   {
     icon: Calendar,
-    title: "Date & Period Alteration",
-    description: "Identifies replaced issue dates, expiration periods, and timeline stamps exhibiting localized noise frequency mismatches.",
-    supported: true,
+    title: "Date & Period Alterations",
+    description: "Identifies replaced issue dates, modified expiry dates, and altered timeline stamps across official forms.",
   },
   {
     icon: PenTool,
-    title: "Signature Splicing & Forgery",
-    description: "Localizes pasted, erased, or re-positioned signatures and endorsement stamps on legal contracts and affidavits.",
-    supported: true,
+    title: "Signature Splicing",
+    description: "Pinpoints signatures that have been digitally cut, copied, or superimposed onto contracts and agreements.",
   },
   {
     icon: ImageIcon,
-    title: "Photo & Portrait Substitution",
-    description: "Pinpoints spliced portrait photographs on identification documents, badges, driver licenses, and credentials.",
-    supported: true,
+    title: "Photo & ID Substitution",
+    description: "Localizes replaced photos on identity cards, badges, certificates, passports, and credential documents.",
   },
   {
     icon: Stamp,
-    title: "Official Stamp / Seal Modification",
-    description: "Exposes altered, digitally superimposed, or transplanted government and institutional rubber stamps.",
-    supported: true,
+    title: "Stamp & Seal Modifications",
+    description: "Exposes digitally altered or transplanted institutional seals, approval stamps, and notary marks.",
   },
   {
     icon: Eraser,
-    title: "Content Inpainting & Erasure",
-    description: "Detects algorithmic or manual brush-based deletion of text clauses, disclaimers, or watermarks.",
-    supported: true,
+    title: "Content Erasure & Inpainting",
+    description: "Highlights deleted text clauses, erased disclaimers, or painted-over document sections.",
   },
 ];
 
 export const Capabilities: React.FC = () => {
   return (
-    <section id="capabilities" className="py-16 md:py-20 border-b border-surface-200">
+    <section id="capabilities" className="py-16 md:py-24 border-b border-slate-200 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-          <div className="max-w-2xl">
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-              Scope of Analysis
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-surface-900 tracking-tight">
-              Tampering Modalities & Forensic Scope
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 mt-2">
-              The dual-stream neural engine is calibrated for forensic indicators commonly found in forged digital records.
-            </p>
+        <div className="max-w-3xl mb-14">
+          <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-2">
+            Inspection Capabilities
           </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Types of Document Manipulation We Inspect
+          </h2>
+          <p className="text-base sm:text-lg text-slate-600 mt-3">
+            DocForensics AI is calibrated to detect common forms of visual and textual forgery in digital paperwork.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {capabilities.map((c, i) => {
             const Icon = c.icon;
             return (
               <div
                 key={i}
-                className="bg-white rounded-lg border border-surface-200 p-5 shadow-subtle hover:shadow-card transition-shadow"
+                className="bg-slate-50/70 rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:bg-white transition-all"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-9 h-9 rounded-md bg-surface-100 flex items-center justify-center text-slate-800">
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    <CheckCircle2 className="w-3 h-3" />
-                    Supported
-                  </span>
+                <div className="w-11 h-11 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-900 mb-4 shadow-sm">
+                  <Icon className="w-5 h-5 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-sm text-surface-900 mb-1.5">
+                <h3 className="font-bold text-base text-slate-900 mb-2">
                   {c.title}
                 </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
+                <p className="text-sm text-slate-600 leading-relaxed">
                   {c.description}
                 </p>
               </div>
@@ -86,12 +72,12 @@ export const Capabilities: React.FC = () => {
           })}
         </div>
 
-        {/* Boundary Notice */}
-        <div className="bg-amber-50/70 border border-amber-200/80 rounded-lg p-4 flex items-start gap-3 text-xs text-amber-900">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-          <div className="leading-relaxed">
-            <span className="font-semibold">Known Boundary Condition:</span> While the system excels at detecting splicing, text replacement, and inpainting, pristine intra-document copy-move duplicates with matched noise characteristics remain challenging for single-frame residual models. Dedicated keypoint-matching modules should be referenced for purely identical self-cloned regions.
-          </div>
+        {/* Short Unobtrusive Disclaimer */}
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3.5 text-xs text-slate-600 max-w-4xl">
+          <AlertCircle className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+          <p className="leading-relaxed">
+            <strong className="text-slate-800">Notice:</strong> Results indicate potential visual manipulation and should not be treated as proof of document authenticity. A qualified forensic document examiner should review any flagged items for critical decisions.
+          </p>
         </div>
       </div>
     </section>
