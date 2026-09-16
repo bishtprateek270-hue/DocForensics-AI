@@ -120,7 +120,8 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
       {/* Main Document Canvas Viewport */}
       <div
         ref={containerRef}
-        className="relative flex-1 min-h-[500px] max-h-[680px] bg-slate-900/5 overflow-auto p-6 flex items-center justify-center select-none"
+        onClick={() => onSelectRegion(null)}
+        className="relative flex-1 min-h-[500px] max-h-[680px] bg-slate-900/5 overflow-auto p-6 flex items-center justify-center select-none cursor-default"
       >
         <div
           className="relative inline-block transition-transform duration-100 ease-out origin-center"
