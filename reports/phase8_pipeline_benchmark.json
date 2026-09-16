@@ -1,0 +1,401 @@
+{
+  "pipeline_version": "phase8_dual_stream_ocr_v1",
+  "timestamp": "2026-09-16T15:29:44Z",
+  "checkpoint_used": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_best.pth",
+  "total_documents_analyzed": 9,
+  "mean_latencies_ms": {
+    "mean_model_inference_ms": 56.76,
+    "mean_ocr_processing_ms": 727.79,
+    "mean_total_pipeline_ms": 804.7
+  },
+  "sample_evaluations": [
+    {
+      "alias": "authentic_control",
+      "manipulation_category": "none",
+      "sample_id": "syn_doc_family_invoice_006_inst_00_authentic",
+      "analysis_status": "no_significant_tampering_evidence_detected",
+      "assessment_summary": "No significant visual tampering evidence detected by the model.",
+      "suspicious_region_count": 0,
+      "total_suspicious_area_percent": 0.0,
+      "highest_tampering_score": 0.0,
+      "regions": [],
+      "performance_latency": {
+        "model_inference_ms": 386.94,
+        "ocr_processing_ms": 960.77,
+        "post_processing_ms": 4.49,
+        "total_pipeline_latency_ms": 1373.53,
+        "peak_vram_mb": 1066.15
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\authentic_control_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "text_replacement",
+      "manipulation_category": "text_replacement",
+      "sample_id": "syn_doc_family_invoice_006_inst_00_v1_text_replacement",
+      "analysis_status": "suspicious_visual_manipulation_detected",
+      "assessment_summary": "Detected 2 suspicious localized region(s) with high tampering likelihood.",
+      "suspicious_region_count": 2,
+      "total_suspicious_area_percent": 1.269,
+      "highest_tampering_score": 0.9946,
+      "regions": [
+        {
+          "region_id": 1,
+          "bbox": [
+            211,
+            272,
+            464,
+            319
+          ],
+          "center": [
+            333.8,
+            292.7
+          ],
+          "pixel_area": 9475,
+          "percentage_of_document_area": 1.128,
+          "mean_tampering_score": 0.8758,
+          "max_tampering_score": 0.9946,
+          "ocr_text": "ITEM DESCRIPTION DEPARTMENT OF REVERUE & COMINTARRIEE",
+          "ocr_confidence": 0.8756,
+          "has_associated_text": true,
+          "region_type": "text_or_number_region"
+        },
+        {
+          "region_id": 2,
+          "bbox": [
+            477,
+            282,
+            551,
+            302
+          ],
+          "center": [
+            513.2,
+            291.9
+          ],
+          "pixel_area": 1185,
+          "percentage_of_document_area": 0.141,
+          "mean_tampering_score": 0.6575,
+          "max_tampering_score": 0.8167,
+          "ocr_text": "No OCR text associated with this suspicious region",
+          "ocr_confidence": 0.0,
+          "has_associated_text": false,
+          "region_type": "signature_like_region"
+        }
+      ],
+      "performance_latency": {
+        "model_inference_ms": 16.7,
+        "ocr_processing_ms": 836.93,
+        "post_processing_ms": 3.5,
+        "total_pipeline_latency_ms": 871.6,
+        "peak_vram_mb": 1075.27
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\text_replacement_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "date_replacement",
+      "manipulation_category": "date_replacement",
+      "sample_id": "syn_doc_family_invoice_006_inst_00_v3_date_replacement",
+      "analysis_status": "suspicious_visual_manipulation_detected",
+      "assessment_summary": "Detected 1 suspicious localized region(s) with high tampering likelihood.",
+      "suspicious_region_count": 1,
+      "total_suspicious_area_percent": 1.083,
+      "highest_tampering_score": 0.9999,
+      "regions": [
+        {
+          "region_id": 1,
+          "bbox": [
+            316,
+            250,
+            499,
+            311
+          ],
+          "center": [
+            410.6,
+            282.7
+          ],
+          "pixel_area": 9101,
+          "percentage_of_document_area": 1.083,
+          "mean_tampering_score": 0.9267,
+          "max_tampering_score": 0.9999,
+          "ocr_text": "Date: 2028-0412",
+          "ocr_confidence": 0.871,
+          "has_associated_text": true,
+          "region_type": "text_or_number_region"
+        }
+      ],
+      "performance_latency": {
+        "model_inference_ms": 14.22,
+        "ocr_processing_ms": 664.26,
+        "post_processing_ms": 2.05,
+        "total_pipeline_latency_ms": 694.31,
+        "peak_vram_mb": 1075.27
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\date_replacement_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "number_replacement",
+      "manipulation_category": "number_amount_replacement",
+      "sample_id": "syn_doc_family_invoice_006_inst_00_v2_number_amount_replacement",
+      "analysis_status": "suspicious_visual_manipulation_detected",
+      "assessment_summary": "Detected 1 suspicious localized region(s) with high tampering likelihood.",
+      "suspicious_region_count": 1,
+      "total_suspicious_area_percent": 0.816,
+      "highest_tampering_score": 0.9986,
+      "regions": [
+        {
+          "region_id": 1,
+          "bbox": [
+            593,
+            544,
+            774,
+            592
+          ],
+          "center": [
+            674.7,
+            565.6
+          ],
+          "pixel_area": 6851,
+          "percentage_of_document_area": 0.816,
+          "mean_tampering_score": 0.8729,
+          "max_tampering_score": 0.9986,
+          "ocr_text": "CGPA: 3.79 /400 #1,203.20",
+          "ocr_confidence": 0.58,
+          "has_associated_text": true,
+          "region_type": "text_or_number_region"
+        }
+      ],
+      "performance_latency": {
+        "model_inference_ms": 14.25,
+        "ocr_processing_ms": 827.5,
+        "post_processing_ms": 2.21,
+        "total_pipeline_latency_ms": 858.41,
+        "peak_vram_mb": 1075.27
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\number_replacement_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "photo_replacement",
+      "manipulation_category": "photo_replacement",
+      "sample_id": "syn_doc_family_invoice_027_inst_00_v3_photo_replacement",
+      "analysis_status": "suspicious_visual_manipulation_detected",
+      "assessment_summary": "Detected 1 suspicious localized region(s) with high tampering likelihood.",
+      "suspicious_region_count": 1,
+      "total_suspicious_area_percent": 4.609,
+      "highest_tampering_score": 0.9998,
+      "regions": [
+        {
+          "region_id": 1,
+          "bbox": [
+            228,
+            295,
+            388,
+            555
+          ],
+          "center": [
+            307.9,
+            425.0
+          ],
+          "pixel_area": 38713,
+          "percentage_of_document_area": 4.609,
+          "mean_tampering_score": 0.963,
+          "max_tampering_score": 0.9998,
+          "ocr_text": "No OCR text associated with this suspicious region",
+          "ocr_confidence": 0.0,
+          "has_associated_text": false,
+          "region_type": "stamp_or_seal_like_region"
+        }
+      ],
+      "performance_latency": {
+        "model_inference_ms": 14.98,
+        "ocr_processing_ms": 720.51,
+        "post_processing_ms": 2.6,
+        "total_pipeline_latency_ms": 751.79,
+        "peak_vram_mb": 1075.27
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\photo_replacement_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "signature_manipulation",
+      "manipulation_category": "signature_manipulation",
+      "sample_id": "syn_doc_family_invoice_027_inst_00_v2_signature_manipulation",
+      "analysis_status": "suspicious_visual_manipulation_detected",
+      "assessment_summary": "Detected 1 suspicious localized region(s) with high tampering likelihood.",
+      "suspicious_region_count": 1,
+      "total_suspicious_area_percent": 2.276,
+      "highest_tampering_score": 0.9996,
+      "regions": [
+        {
+          "region_id": 1,
+          "bbox": [
+            71,
+            938,
+            363,
+            1013
+          ],
+          "center": [
+            222.0,
+            977.0
+          ],
+          "pixel_area": 19115,
+          "percentage_of_document_area": 2.276,
+          "mean_tampering_score": 0.9387,
+          "max_tampering_score": 0.9996,
+          "ocr_text": "Di Dr. Kenneth Clarke",
+          "ocr_confidence": 0.816,
+          "has_associated_text": true,
+          "region_type": "text_or_number_region"
+        }
+      ],
+      "performance_latency": {
+        "model_inference_ms": 17.94,
+        "ocr_processing_ms": 785.22,
+        "post_processing_ms": 2.18,
+        "total_pipeline_latency_ms": 819.27,
+        "peak_vram_mb": 1075.27
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\signature_manipulation_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "local_inpainting",
+      "manipulation_category": "local_inpainting",
+      "sample_id": "syn_doc_family_certificate_005_inst_00_v4_local_inpainting",
+      "analysis_status": "suspicious_visual_manipulation_detected",
+      "assessment_summary": "Detected 1 suspicious localized region(s) with high tampering likelihood.",
+      "suspicious_region_count": 1,
+      "total_suspicious_area_percent": 0.039,
+      "highest_tampering_score": 0.7169,
+      "regions": [
+        {
+          "region_id": 1,
+          "bbox": [
+            845,
+            427,
+            880,
+            438
+          ],
+          "center": [
+            860.8,
+            432.3
+          ],
+          "pixel_area": 262,
+          "percentage_of_document_area": 0.039,
+          "mean_tampering_score": 0.6014,
+          "max_tampering_score": 0.7169,
+          "ocr_text": "No OCR text associated with this suspicious region",
+          "ocr_confidence": 0.0,
+          "has_associated_text": false,
+          "region_type": "signature_like_region"
+        }
+      ],
+      "performance_latency": {
+        "model_inference_ms": 13.78,
+        "ocr_processing_ms": 496.82,
+        "post_processing_ms": 2.1,
+        "total_pipeline_latency_ms": 524.24,
+        "peak_vram_mb": 908.34
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\local_inpainting_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "copy_move_intra",
+      "manipulation_category": "copy_move_intra",
+      "sample_id": "syn_doc_family_invoice_006_inst_00_v4_copy_move_intra",
+      "analysis_status": "no_significant_tampering_evidence_detected",
+      "assessment_summary": "No significant visual tampering evidence detected by the model.",
+      "suspicious_region_count": 0,
+      "total_suspicious_area_percent": 0.0,
+      "highest_tampering_score": 0.0,
+      "regions": [],
+      "performance_latency": {
+        "model_inference_ms": 15.26,
+        "ocr_processing_ms": 708.22,
+        "post_processing_ms": 2.22,
+        "total_pipeline_latency_ms": 741.21,
+        "peak_vram_mb": 1075.27
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\copy_move_intra_syn_doc__forensic_report.png"
+    },
+    {
+      "alias": "public_realtext",
+      "manipulation_category": "public_realtext_tampered",
+      "sample_id": "public_GenText_Forensic_00000004",
+      "analysis_status": "suspicious_visual_manipulation_detected",
+      "assessment_summary": "Detected 3 suspicious localized region(s) with high tampering likelihood.",
+      "suspicious_region_count": 3,
+      "total_suspicious_area_percent": 62.592,
+      "highest_tampering_score": 0.9529,
+      "regions": [
+        {
+          "region_id": 1,
+          "bbox": [
+            98,
+            151,
+            1023,
+            1490
+          ],
+          "center": [
+            562.7,
+            821.3
+          ],
+          "pixel_area": 1087090,
+          "percentage_of_document_area": 62.53,
+          "mean_tampering_score": 0.8354,
+          "max_tampering_score": 0.9529,
+          "ocr_text": "ALeRT PLEASE WASH HANDS AFTER EATING DONT SHARE GOOD) OD READ INGREDIENT LABELS AND ASK QUESTIONS IF YOU ARE UNCERTAIN OF WHAT A \"SAFE\" FOOD IS: TOKEEp RISKEE",
+          "ocr_confidence": 0.7421,
+          "has_associated_text": true,
+          "region_type": "text_or_number_region"
+        },
+        {
+          "region_id": 2,
+          "bbox": [
+            637,
+            652,
+            653,
+            675
+          ],
+          "center": [
+            644.6,
+            662.5
+          ],
+          "pixel_area": 275,
+          "percentage_of_document_area": 0.016,
+          "mean_tampering_score": 0.5338,
+          "max_tampering_score": 0.5692,
+          "ocr_text": "No OCR text associated with this suspicious region",
+          "ocr_confidence": 0.0,
+          "has_associated_text": false,
+          "region_type": "stamp_or_seal_like_region"
+        },
+        {
+          "region_id": 3,
+          "bbox": [
+            278,
+            1236,
+            309,
+            1270
+          ],
+          "center": [
+            293.9,
+            1251.5
+          ],
+          "pixel_area": 798,
+          "percentage_of_document_area": 0.046,
+          "mean_tampering_score": 0.5673,
+          "max_tampering_score": 0.6551,
+          "ocr_text": "No OCR text associated with this suspicious region",
+          "ocr_confidence": 0.0,
+          "has_associated_text": false,
+          "region_type": "stamp_or_seal_like_region"
+        }
+      ],
+      "performance_latency": {
+        "model_inference_ms": 16.76,
+        "ocr_processing_ms": 549.88,
+        "post_processing_ms": 10.36,
+        "total_pipeline_latency_ms": 607.98,
+        "peak_vram_mb": 2000.34
+      },
+      "visual_report_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\outputs\\phase8_visual_reports\\public_realtext_public_G_forensic_report.png"
+    }
+  ]
+}
