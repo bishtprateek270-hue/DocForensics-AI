@@ -1,14 +1,16 @@
 """
-DocForensics AI — Document Tampering Detection & Localization
-Configuration Module (config.py)
-
-Central configuration for paths, device selection, model parameters,
-preprocessing settings, training hyperparameters, and logging.
+DocForensics AI — Central Hardware & Training Configuration Module
+Supports seamless execution across:
+1. Windows Laptop with NVIDIA GeForce RTX 5050 (8GB VRAM)
+2. NVIDIA DGX Spark (Multi-GPU / High-VRAM)
+3. Standard CPU environments
 """
 
 import os
+import platform
 from pathlib import Path
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
+from typing import Optional, Tuple, Dict, Any
 import torch
 
 
@@ -48,23 +50,74 @@ for path in [DATA_DIR, RAW_DATA_DIR, RAW_PUBLIC_DIR, PROCESSED_DATA_DIR,
 
 
 # ==========================================
-# Device Configuration
+# Hardware & Device Management
 # ==========================================
-def get_device() -> torch.device:
-    """Auto-detect best available computing device."""
-    if torch.cuda.is_available():
+def get_target_device(device_str: str = "auto") -> torch.device:
+    """
+    Selects compute device with strict validation.
+    If 'cuda' is explicitly requested and unavailable, raises RuntimeError instead of silent CPU fallback.
+    """
+    device_str = device_str.lower().strip()
+    if device_str == "cuda":
+        if not torch.cuda.is_available():
+            raise RuntimeError(
+                "[-] CUDA device explicitly requested, but torch.cuda.is_available() is False. "
+                "Ensure NVIDIA GPU drivers and a CUDA-compatible PyTorch build are installed. "
+                "Will NOT silently fallback to CPU."
+            )
         return torch.device("cuda")
-    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        return torch.device("mps")
-    return torch.device("cpu")
-
-
-DEVICE = get_device()
-NUM_WORKERS = min(4, os.cpu_count() or 1)
+    elif device_str == "cpu":
+        return torch.device("cpu")
+    elif device_str == "auto":
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    else:
+        return torch.device(device_str)
 
 
 # ==========================================
-# Dataset Split & Preparation Configuration
+# Hardware Profile Definitions
+# ==========================================
+@dataclass
+class HardwareProfile:
+    name: str = "auto"
+    device: str = "cuda" if torch.cuda.is_available() else "cpu"
+    batch_size: int = 4                            # Conservative default for RTX 5050 8GB
+    num_workers: int = 0 if platform.system() == "Windows" else 4
+    pin_memory: bool = torch.cuda.is_available()
+    mixed_precision: bool = torch.cuda.is_available()  # Automatic Mixed Precision (AMP)
+    gradient_accumulation_steps: int = 1
+
+
+HARDWARE_PROFILES: Dict[str, Dict[str, Any]] = {
+    "laptop_rtx5050": {
+        "device": "cuda",
+        "batch_size": 4,                           # Safe 512x512 batch size on 8GB VRAM
+        "num_workers": 0 if platform.system() == "Windows" else 2,
+        "pin_memory": True,
+        "mixed_precision": True,
+        "gradient_accumulation_steps": 2,          # Effective batch size = 8
+    },
+    "dgx_spark": {
+        "device": "cuda",
+        "batch_size": 16,                          # High throughput on DGX VRAM
+        "num_workers": 8,
+        "pin_memory": True,
+        "mixed_precision": True,
+        "gradient_accumulation_steps": 1,
+    },
+    "cpu": {
+        "device": "cpu",
+        "batch_size": 4,
+        "num_workers": 0,
+        "pin_memory": False,
+        "mixed_precision": False,
+        "gradient_accumulation_steps": 1,
+    },
+}
+
+
+# ==========================================
+# Dataset Configuration
 # ==========================================
 @dataclass
 class DatasetConfig:
@@ -72,22 +125,22 @@ class DatasetConfig:
     val_ratio: float = 0.15
     test_ratio: float = 0.15
     seed: int = 42
-    standardize_ext: str = ".png"                  # Target standardized image format
-    min_tampered_area_ratio: float = 0.001         # Minimum fraction of tampered pixels for valid tamper
-    max_tampered_area_ratio: float = 0.50          # Maximum fraction of tampered pixels
+    standardize_ext: str = ".png"
+    min_tampered_area_ratio: float = 0.001
+    max_tampered_area_ratio: float = 0.50
 
 
 # ==========================================
-# Image & Preprocessing Settings
+# Preprocessing Configuration
 # ==========================================
 @dataclass
 class PreprocessingConfig:
-    image_size: tuple[int, int] = (512, 512)       # (Height, Width) for model input
-    mean: tuple[float, float, float] = (0.485, 0.456, 0.406)  # ImageNet normalization
-    std: tuple[float, float, float] = (0.229, 0.224, 0.225)
-    ela_quality: int = 90                          # Quality factor for Error Level Analysis
-    ela_scale: float = 15.0                        # Visual multiplier for ELA difference
-    srm_filter_count: int = 3                      # SRM forensic residual filters
+    image_size: Tuple[int, int] = (512, 512)       # (Height, Width)
+    mean: Tuple[float, float, float] = (0.485, 0.456, 0.406)  # ImageNet normalization
+    std: Tuple[float, float, float] = (0.229, 0.224, 0.225)
+    ela_quality: int = 90
+    ela_scale: float = 15.0
+    srm_filter_count: int = 3
 
 
 # ==========================================
@@ -95,12 +148,12 @@ class PreprocessingConfig:
 # ==========================================
 @dataclass
 class ModelConfig:
-    architecture: str = "two_stream_unet"          # Options: unet, segformer, two_stream_unet, trufour
-    backbone: str = "resnet34"                     # Visual stream backbone
-    in_channels: int = 3                           # RGB (3) or Dual-Stream (6/7)
-    num_classes: int = 1                           # Binary segmentation mask (0: authentic, 1: tampered)
-    pretrained: bool = True
-    dropout: float = 0.2
+    architecture: str = "unet"                     # Options: unet, segformer, two_stream_unet
+    backbone: str = "custom"                       # Visual stream backbone
+    in_channels: int = 3
+    num_classes: int = 1
+    base_channels: int = 32
+    dropout: float = 0.1
 
 
 # ==========================================
@@ -108,15 +161,19 @@ class ModelConfig:
 # ==========================================
 @dataclass
 class TrainingConfig:
-    batch_size: int = 8
-    num_epochs: int = 50
-    learning_rate: float = 1e-4
+    batch_size: int = 4                            # Default starting batch size on RTX 5050
+    num_epochs: int = 25
+    learning_rate: float = 1e-3
     weight_decay: float = 1e-4
     scheduler: str = "cosine"                      # Options: cosine, plateau, step
-    early_stopping_patience: int = 10
-    mixed_precision: bool = torch.cuda.is_available()  # Automatic Mixed Precision (AMP)
+    early_stopping_patience: int = 6
+    mixed_precision: bool = torch.cuda.is_available()  # AMP (FP16)
+    gradient_accumulation_steps: int = 1
+    num_workers: int = 0 if platform.system() == "Windows" else 4
+    pin_memory: bool = torch.cuda.is_available()
     seed: int = 42
     save_top_k: int = 3
+    device: str = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 # ==========================================
@@ -127,13 +184,37 @@ class Config:
     project_name: str = "DocForensics AI"
     version: str = "1.0.0"
     base_dir: Path = BASE_DIR
-    device: torch.device = field(default_factory=get_device)
-    num_workers: int = NUM_WORKERS
-    
+    hardware_profile: str = "laptop_rtx5050" if torch.cuda.is_available() else "cpu"
+
     dataset: DatasetConfig = field(default_factory=DatasetConfig)
     preprocessing: PreprocessingConfig = field(default_factory=PreprocessingConfig)
     model: ModelConfig = field(default_factory=ModelConfig)
     training: TrainingConfig = field(default_factory=TrainingConfig)
+
+    def apply_hardware_profile(self, profile_name: str):
+        """Applies hardware settings preset (laptop_rtx5050, dgx_spark, cpu)."""
+        if profile_name not in HARDWARE_PROFILES:
+            raise ValueError(f"Unknown hardware profile '{profile_name}'. Available: {list(HARDWARE_PROFILES.keys())}")
+        
+        p = HARDWARE_PROFILES[profile_name]
+        self.hardware_profile = profile_name
+        self.training.device = p["device"]
+        self.training.batch_size = p["batch_size"]
+        self.training.num_workers = p["num_workers"]
+        self.training.pin_memory = p["pin_memory"]
+        self.training.mixed_precision = p["mixed_precision"]
+        self.training.gradient_accumulation_steps = p.get("gradient_accumulation_steps", 1)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "project_name": self.project_name,
+            "version": self.version,
+            "hardware_profile": self.hardware_profile,
+            "dataset": asdict(self.dataset),
+            "preprocessing": asdict(self.preprocessing),
+            "model": asdict(self.model),
+            "training": asdict(self.training),
+        }
 
 
 # Instantiate default config instance
@@ -141,10 +222,10 @@ cfg = Config()
 
 if __name__ == "__main__":
     print(f"=== {cfg.project_name} v{cfg.version} Configuration ===")
-    print(f"Base Directory : {cfg.base_dir}")
-    print(f"Active Device  : {cfg.device}")
-    print(f"Num Workers    : {cfg.num_workers}")
-    print(f"Input Size     : {cfg.preprocessing.image_size}")
-    print(f"Architecture   : {cfg.model.architecture} (Backbone: {cfg.model.backbone})")
-    print(f"Batch Size     : {cfg.training.batch_size} | Epochs: {cfg.training.num_epochs}")
-    print(f"AMP Enabled    : {cfg.training.mixed_precision}")
+    print(f"Base Directory   : {cfg.base_dir}")
+    print(f"Hardware Profile : {cfg.hardware_profile}")
+    print(f"Active Device    : {cfg.training.device}")
+    print(f"Batch Size       : {cfg.training.batch_size} (Grad Accum: {cfg.training.gradient_accumulation_steps})")
+    print(f"Workers          : {cfg.training.num_workers} | Pin Memory: {cfg.training.pin_memory}")
+    print(f"AMP Enabled      : {cfg.training.mixed_precision}")
+    print(f"Input Resolution : {cfg.preprocessing.image_size}")

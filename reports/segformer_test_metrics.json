@@ -1,0 +1,102 @@
+{
+  "model_name": "segformer",
+  "checkpoint_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\segformer_best.pth",
+  "best_epoch": 4,
+  "device_used": "cuda",
+  "test_dataset_size": 122,
+  "avg_inference_latency_ms": 24.9,
+  "peak_vram_mb": 425.49,
+  "test_metrics": {
+    "test_loss": 0.4719,
+    "test_dice": 0.2627,
+    "test_iou": 0.2567,
+    "test_precision": 0.9892,
+    "test_recall": 0.2666
+  },
+  "per_category_metrics": {
+    "none": {
+      "sample_count": 25,
+      "mean_dice": 1.0,
+      "mean_iou": 1.0,
+      "mean_precision": 1.0,
+      "mean_recall": 1.0
+    },
+    "text_replacement": {
+      "sample_count": 8,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "number_amount_replacement": {
+      "sample_count": 8,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "date_replacement": {
+      "sample_count": 14,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "copy_move_intra": {
+      "sample_count": 14,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "copy_paste_inter": {
+      "sample_count": 11,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "signature_manipulation": {
+      "sample_count": 11,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "photo_replacement": {
+      "sample_count": 8,
+      "mean_dice": 0.8815,
+      "mean_iou": 0.7899,
+      "mean_precision": 0.836,
+      "mean_recall": 0.941
+    },
+    "stamp_seal_manipulation": {
+      "sample_count": 8,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "region_removal": {
+      "sample_count": 5,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "local_inpainting": {
+      "sample_count": 5,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    },
+    "public_realtext_tampered": {
+      "sample_count": 5,
+      "mean_dice": 0.0,
+      "mean_iou": 0.0,
+      "mean_precision": 1.0,
+      "mean_recall": 0.0
+    }
+  }
+}

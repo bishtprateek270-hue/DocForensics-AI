@@ -97,6 +97,8 @@ checkpoints/
 logs/
 runs/
 wandb/
-reports/
+reports/*
+!reports/.gitkeep
+!reports/*.json
 outputs/*
 !outputs/.gitkeep
