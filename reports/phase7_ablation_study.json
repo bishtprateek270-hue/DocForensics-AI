@@ -1,0 +1,31 @@
+{
+  "1_rgb_only_deeplabv3plus": {
+    "description": "RGB-only single stream (DeepLabV3+)",
+    "fusion_type": "none",
+    "best_val_epoch": 7,
+    "best_val_dice": 0.4865,
+    "total_training_time": 606.7
+  },
+  "2_dual_stream_concat_fusion": {
+    "description": "RGB + SRM Forensic Stream (Concat + Conv Fusion)",
+    "fusion_type": "baseline",
+    "best_val_epoch": 17,
+    "best_val_dice": 0.7501,
+    "total_training_time": 1168.57,
+    "checkpoint": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_baseline_best.pth"
+  },
+  "3_dual_stream_gated_attention": {
+    "description": "RGB + SRM Forensic Stream (Gated Attention Fusion)",
+    "fusion_type": "gated",
+    "best_val_epoch": 20,
+    "best_val_dice": 0.7145,
+    "total_training_time": 1083.01,
+    "checkpoint": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_gated_best.pth"
+  },
+  "selected_phase7_model": {
+    "config_key": "2_dual_stream_concat_fusion",
+    "fusion_type": "baseline",
+    "best_val_dice": 0.7501,
+    "final_checkpoint": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_best.pth"
+  }
+}
