@@ -80,6 +80,12 @@ data/processed/*
 !data/processed/.gitkeep
 data/synthetic/*
 !data/synthetic/.gitkeep
+data/train/*
+!data/train/.gitkeep
+data/val/*
+!data/val/.gitkeep
+data/test/*
+!data/test/.gitkeep
 checkpoints/
 *.pth
 *.pt
@@ -89,4 +95,5 @@ logs/
 runs/
 wandb/
 reports/
-outputs/
+outputs/*
+!outputs/.gitkeep

@@ -1,0 +1,73 @@
+{
+  "project_name": "DocForensics AI",
+  "dataset_name": "DocForensics-Integrated-Benchmark-v1",
+  "total_samples": 650,
+  "total_document_families": 200,
+  "data_sources": {
+    "public_realtext_v2": {
+      "total_samples": 50,
+      "percentage_of_dataset": 7.69,
+      "genuine_samples": 20,
+      "tampered_samples": 30,
+      "unique_families": 50,
+      "license": "CC-BY-NC-4.0",
+      "splits": {
+        "train": 35,
+        "val": 8,
+        "test": 7
+      }
+    },
+    "synthetic_docforensics": {
+      "total_samples": 600,
+      "percentage_of_dataset": 92.31,
+      "genuine_samples": 150,
+      "tampered_samples": 450,
+      "unique_families": 150,
+      "license": "MIT",
+      "splits": {
+        "train": 420,
+        "test": 92,
+        "val": 88
+      }
+    }
+  },
+  "class_distribution": {
+    "genuine": 170,
+    "genuine_pct": 26.15,
+    "tampered": 480,
+    "tampered_pct": 73.85
+  },
+  "split_distribution": {
+    "train_samples": 455,
+    "train_pct": 70.0,
+    "train_families": 140,
+    "val_samples": 96,
+    "val_pct": 14.77,
+    "val_families": 30,
+    "test_samples": 99,
+    "test_pct": 15.23,
+    "test_families": 30
+  },
+  "document_types": {
+    "invoice": 120,
+    "id_card": 120,
+    "contract": 120,
+    "certificate": 120,
+    "receipt": 120,
+    "public_document": 50
+  },
+  "tampering_techniques": {
+    "none": 170,
+    "splicing": 150,
+    "copy_move": 150,
+    "erasure_inpainting": 150,
+    "public_realtext_tampered": 30
+  },
+  "mask_statistics": {
+    "mean_tampered_area_pct": 1.11,
+    "median_tampered_area_pct": 0.99,
+    "min_tampered_area_pct": 0.19,
+    "max_tampered_area_pct": 8.27,
+    "std_tampered_area_pct": 0.73
+  }
+}
