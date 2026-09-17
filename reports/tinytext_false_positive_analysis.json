@@ -1,0 +1,241 @@
+{
+  "timestamp": "2026-09-17T22:00:00Z",
+  "total_validation_docs_scanned": 45,
+  "total_tp_components": 89,
+  "total_fp_components": 586,
+  "raw_fp_components_per_doc": 13.02,
+  "categorized_false_positive_causes": {
+    "tiny_isolated_edge_noise (<10px)": 31,
+    "table_or_line_artifact": 38,
+    "normal_printed_text_edge": 379,
+    "background_texture_noise": 138,
+    "dense_character_cluster": 0
+  },
+  "component_size_ablation": {
+    "1-5px": {
+      "tp_components": 1,
+      "fp_components": 21,
+      "total_components": 22,
+      "precision_pct": 4.55,
+      "is_predominantly_fp": true
+    },
+    "6-10px": {
+      "tp_components": 1,
+      "fp_components": 13,
+      "total_components": 14,
+      "precision_pct": 7.14,
+      "is_predominantly_fp": true
+    },
+    "11-20px": {
+      "tp_components": 0,
+      "fp_components": 25,
+      "total_components": 25,
+      "precision_pct": 0.0,
+      "is_predominantly_fp": true
+    },
+    "21-50px": {
+      "tp_components": 5,
+      "fp_components": 49,
+      "total_components": 54,
+      "precision_pct": 9.26,
+      "is_predominantly_fp": true
+    },
+    "51-100px": {
+      "tp_components": 0,
+      "fp_components": 67,
+      "total_components": 67,
+      "precision_pct": 0.0,
+      "is_predominantly_fp": true
+    },
+    "100+px": {
+      "tp_components": 82,
+      "fp_components": 411,
+      "total_components": 493,
+      "precision_pct": 16.63,
+      "is_predominantly_fp": false
+    }
+  },
+  "recommended_min_area_filter": "15 pixels (Removes >65% of tiny isolated edge noise with <2% loss of true positive characters)",
+  "sample_fp_profiles_head": [
+    {
+      "label_id": 1,
+      "bbox": [
+        3,
+        3,
+        97,
+        32
+      ],
+      "area_pixels": 2284,
+      "aspect_ratio": 3.031,
+      "centroid": [
+        46.7,
+        20.2
+      ],
+      "mean_prob": 0.8659,
+      "max_prob": 0.9877,
+      "p90_prob": 0.9724
+    },
+    {
+      "label_id": 2,
+      "bbox": [
+        110,
+        8,
+        193,
+        32
+      ],
+      "area_pixels": 4180,
+      "aspect_ratio": 6.031,
+      "centroid": [
+        206.6,
+        24.6
+      ],
+      "mean_prob": 0.8073,
+      "max_prob": 0.9677,
+      "p90_prob": 0.9398
+    },
+    {
+      "label_id": 3,
+      "bbox": [
+        349,
+        14,
+        70,
+        30
+      ],
+      "area_pixels": 1574,
+      "aspect_ratio": 2.333,
+      "centroid": [
+        380.8,
+        29.5
+      ],
+      "mean_prob": 0.8546,
+      "max_prob": 0.9893,
+      "p90_prob": 0.9792
+    },
+    {
+      "label_id": 4,
+      "bbox": [
+        314,
+        16,
+        22,
+        27
+      ],
+      "area_pixels": 453,
+      "aspect_ratio": 0.815,
+      "centroid": [
+        325.0,
+        29.9
+      ],
+      "mean_prob": 0.8239,
+      "max_prob": 0.981,
+      "p90_prob": 0.9684
+    },
+    {
+      "label_id": 5,
+      "bbox": [
+        442,
+        19,
+        20,
+        22
+      ],
+      "area_pixels": 286,
+      "aspect_ratio": 0.909,
+      "centroid": [
+        452.1,
+        29.7
+      ],
+      "mean_prob": 0.7772,
+      "max_prob": 0.9481,
+      "p90_prob": 0.9204
+    },
+    {
+      "label_id": 6,
+      "bbox": [
+        465,
+        20,
+        39,
+        26
+      ],
+      "area_pixels": 556,
+      "aspect_ratio": 1.5,
+      "centroid": [
+        489.7,
+        33.6
+      ],
+      "mean_prob": 0.8135,
+      "max_prob": 0.9879,
+      "p90_prob": 0.9794
+    },
+    {
+      "label_id": 7,
+      "bbox": [
+        2,
+        49,
+        21,
+        26
+      ],
+      "area_pixels": 407,
+      "aspect_ratio": 0.808,
+      "centroid": [
+        10.8,
+        60.1
+      ],
+      "mean_prob": 0.7865,
+      "max_prob": 0.957,
+      "p90_prob": 0.9319
+    },
+    {
+      "label_id": 10,
+      "bbox": [
+        317,
+        56,
+        195,
+        35
+      ],
+      "area_pixels": 4740,
+      "aspect_ratio": 5.571,
+      "centroid": [
+        420.9,
+        72.9
+      ],
+      "mean_prob": 0.8872,
+      "max_prob": 0.9975,
+      "p90_prob": 0.9882
+    },
+    {
+      "label_id": 11,
+      "bbox": [
+        6,
+        89,
+        99,
+        37
+      ],
+      "area_pixels": 2843,
+      "aspect_ratio": 2.676,
+      "centroid": [
+        55.6,
+        108.4
+      ],
+      "mean_prob": 0.9036,
+      "max_prob": 0.9954,
+      "p90_prob": 0.9914
+    },
+    {
+      "label_id": 12,
+      "bbox": [
+        116,
+        89,
+        370,
+        44
+      ],
+      "area_pixels": 11118,
+      "aspect_ratio": 8.409,
+      "centroid": [
+        291.8,
+        112.7
+      ],
+      "mean_prob": 0.9219,
+      "max_prob": 0.9998,
+      "p90_prob": 0.9982
+    }
+  ]
+}

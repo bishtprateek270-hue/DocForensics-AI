@@ -1,31 +1,31 @@
 {
-  "dataset_path": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmpzsva_til",
+  "dataset_path": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmp63okxjm3",
   "total_epochs": 1,
   "batch_size": 2,
   "initial_lr": 0.001,
   "pretrained_source": "None",
-  "best_checkpoint": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmpzsva_til\\test_out_best.pth",
+  "best_checkpoint": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmp63okxjm3\\test_out_best.pth",
   "best_val_dice": 0.2647744122032382,
-  "total_duration_sec": 4.690316915512085,
+  "total_duration_sec": 4.276514530181885,
   "history": [
     {
       "epoch": 1,
       "train": {
-        "dice": 0.3091843767005438,
-        "iou": 0.18597037370408176,
-        "precision": 0.19885319341591617,
-        "recall": 0.6954625000038068,
-        "loss": 0.7107543349266052
+        "dice": 0.2977910052734409,
+        "iou": 0.17576982670262475,
+        "precision": 0.18682837078904735,
+        "recall": 0.7494750000031316,
+        "loss": 0.7458553612232208
       },
       "val": {
         "dice": 0.2647744122032382,
         "iou": 0.1525878906282326,
         "precision": 0.1525878906282326,
         "recall": 1.0,
-        "loss": 0.8943690657615662
+        "loss": 1.0252046585083008
       },
       "lr": 1e-06,
-      "duration": 4.094253063201904
+      "duration": 3.4012622833251953
     }
   ]
 }

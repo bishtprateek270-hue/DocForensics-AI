@@ -195,47 +195,7 @@ async def get_analysis_report(session_id: str):
     if not session:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Analysis session not found.")
 
-    # Reconstruct Pydantic report from session
-    regions_schema = []
-    raw = session.report_data
-    for r in raw["suspicious_regions"]:
-        regions_schema.append({
-            "region_id": r["region_id"],
-            "bbox": r["bbox"],
-            "center": r["center"],
-            "pixel_area": r["pixel_area"],
-            "percentage_of_document_area": r["percentage_of_document_area"],
-            "mean_tampering_score": r["mean_tampering_score"],
-            "max_tampering_score": r["max_tampering_score"],
-            "ocr_text": r["ocr_text"],
-            "ocr_confidence": r["ocr_confidence"],
-            "has_associated_text": r["has_associated_text"],
-            "region_type": r["region_type"],
-            "crop_url": f"/api/analysis/{session_id}/regions/{r['region_id']}",
-        })
-
-    return ForensicAnalysisReport(
-        session_id=session_id,
-        document_id=session_id,
-        filename=session.filename,
-        file_type=session.file_type,
-        page_number=session.page_number,
-        total_pages=session.total_pages,
-        timestamp_utc=raw["timestamp_utc"],
-        analysis_status=raw["analysis_status"],
-        assessment_summary=raw["assessment_summary"],
-        model_architecture="dual_stream_rgb_srm_forensic",
-        inference_threshold=raw["inference_threshold"],
-        original_resolution=raw["original_resolution"],
-        suspicious_region_count=raw["suspicious_region_count"],
-        total_suspicious_area_percent=raw["total_suspicious_area_percent"],
-        highest_tampering_score=raw["highest_tampering_score"],
-        performance_latency=raw["performance_latency"],
-        suspicious_regions=regions_schema,
-        image_url=f"/api/analysis/{session_id}/image",
-        heatmap_url=f"/api/analysis/{session_id}/heatmap",
-        overlay_url=f"/api/analysis/{session_id}/overlay",
-    )
+    return ForensicAnalysisReport(**session.report_data)
 
 
 @app.get("/api/analysis/{session_id}/image", tags=["Assets"])
@@ -292,6 +252,30 @@ async def get_region_crop(session_id: str, region_id: int):
     buf = io.BytesIO()
     Image.fromarray(crop_rgb).save(buf, format="PNG")
     return Response(content=buf.getvalue(), media_type="image/png")
+
+
+@app.get("/api/analysis/{session_id}/pdf-report", tags=["Assets"])
+async def get_pdf_report(session_id: str):
+    """Streams authoritative forensic PDF dossier for download."""
+    service = ForensicService.get_instance()
+    session = service.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found.")
+
+    if session.pdf_bytes is None:
+        from backend.pdf_report_generator import generate_forensic_pdf_bytes
+        session.pdf_bytes = generate_forensic_pdf_bytes(
+            report_data=session.report_data,
+            overlay_image_rgb=session.overlay_rgb,
+            heatmap_image_rgb=session.heatmap_rgb,
+        )
+
+    filename = f"DocForensics_Report_{session.filename.rsplit('.', 1)[0]}_{session_id[:8]}.pdf"
+    return Response(
+        content=session.pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 if __name__ == "__main__":

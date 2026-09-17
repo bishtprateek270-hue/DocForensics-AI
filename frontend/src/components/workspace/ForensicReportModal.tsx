@@ -2,7 +2,20 @@
 
 import React from "react";
 import { ForensicReport } from "../../types/forensic";
-import { X, Download, FileText, CheckCircle, AlertTriangle, Calculator, Layers } from "lucide-react";
+import { getAssetUrl } from "../../lib/api";
+import {
+  X,
+  Download,
+  FileText,
+  CheckCircle,
+  AlertTriangle,
+  Calculator,
+  Layers,
+  ShieldCheck,
+  ShieldAlert,
+  Info,
+  ExternalLink,
+} from "lucide-react";
 
 interface ForensicReportModalProps {
   report: ForensicReport;
@@ -20,45 +33,45 @@ export const ForensicReportModal: React.FC<ForensicReportModalProps> = ({
   const contentAnalysis = report.content_analysis;
   const checks = contentAnalysis?.checks || [];
   const extractedSubjects = contentAnalysis?.extracted_fields?.subjects || [];
+  const evSummary = report.evidence_summary;
 
-  const handleDownloadReport = () => {
+  const handleDownloadPdf = () => {
+    const pdfUrl = getAssetUrl(report.pdf_report_url || `/api/analysis/${report.session_id}/pdf-report`);
+    window.open(pdfUrl, "_blank");
+  };
+
+  const handleDownloadText = () => {
     const reportText = `======================================================================
-DOCFORENSICS AI - COMPREHENSIVE DOCUMENT FORENSIC REPORT
+DOCFORENSICS AI - DUAL-SPECIALIST FORENSIC REPORT
 ======================================================================
 Document File:   ${report.filename}
 Session ID:      ${report.session_id}
 Date & Time:     ${report.timestamp_utc}
-Final Verdict:   ${report.analysis_status.replace(/_/g, " ").toUpperCase()}
+Verdict:         ${report.assessment_summary}
 
 ----------------------------------------------------------------------
-EXECUTIVE SUMMARY:
+1. MULTI-EVIDENCE CHANNEL SUMMARY
 ----------------------------------------------------------------------
-${report.assessment_summary}
+- Physical / Image Visual Evidence: ${evSummary?.physical_visual_evidence ? "Visual Traces Present" : "No Significant Evidence"}
+- Tiny-Text Visual Pattern Evidence: ${evSummary?.digital_text_visual_evidence ? "Visual Patterns Present" : "No Significant Evidence"}
+- Content Consistency:              ${evSummary?.content_inconsistency ? "Inconsistency Detected" : "Consistent"}
+- Reference Verification:           ${report.record_verification?.status || "Not Available"}
 
 ----------------------------------------------------------------------
-LAYER 1: VISUAL FORENSIC ANALYSIS (PIXEL & SRM NOISE)
+2. LOCALIZED SUSPICIOUS REGIONS (${report.suspicious_regions.length})
 ----------------------------------------------------------------------
-- Model Architecture:      ${report.model_architecture}
-- Highest Tampering Score: ${(report.highest_tampering_score * 100).toFixed(1)}%
-- Flagged Regions Count:   ${report.suspicious_region_count}
-- Flagged Area Coverage:   ${report.total_suspicious_area_percent.toFixed(2)}% of document
-
-${report.suspicious_regions.length === 0 ? "No suspicious pixel-level areas detected." : report.suspicious_regions.map((r) => `
-[Area #${r.region_id}]
-- Type:                  ${r.region_type.replace(/_/g, " ")}
-- Tampering Probability: ${(r.max_tampering_score * 100).toFixed(1)}%
-- Document Coverage:     ${r.percentage_of_document_area.toFixed(2)}%
-- Extracted Text:        ${r.has_associated_text && r.ocr_text ? `"${r.ocr_text}"` : "None detected"}
-- Text Confidence:       ${r.has_associated_text && r.ocr_confidence !== null ? `${(r.ocr_confidence * 100).toFixed(1)}%` : "N/A"}
+${report.suspicious_regions.length === 0 ? "No suspicious regions detected." : report.suspicious_regions.map((r) => `
+[Region #${r.region_id}]
+- Contributing Sources: ${(r.evidence_sources || ["Visual Specialist"]).join(", ")}
+- Bounding Box [x1,y1,x2,y2]: [${r.bbox.join(", ")}]
+- Evidence Score:       ${(r.evidence_score ?? r.mean_tampering_score).toFixed(3)}
+- Associated Text:      ${r.has_associated_text && r.ocr_text ? `"${r.ocr_text}"` : "None"}
+- Explanation:          ${r.explanation || "Visual anomaly detected"}
 `).join("")}
 
 ----------------------------------------------------------------------
-LAYER 2: CONTENT CONSISTENCY & MATHEMATICAL ANALYSIS
+3. CONTENT & MATHEMATICAL CHECKS
 ----------------------------------------------------------------------
-- Document Category: ${contentAnalysis?.document_type || "generic_document"}
-- Consistency Status: ${contentAnalysis?.status || "insufficient_information"}
-- Summary: ${contentAnalysis?.summary || "N/A"}
-
 ${checks.length === 0 ? "No deterministic checks executed." : checks.map((c) => `
 [Check: ${c.check_name}]
 - Status:     ${c.status.toUpperCase()}
@@ -67,20 +80,11 @@ ${checks.length === 0 ? "No deterministic checks executed." : checks.map((c) => 
 - Detail:     ${c.explanation}
 `).join("")}
 
-${extractedSubjects.length > 0 ? `
-Extracted Course Table:
-${extractedSubjects.map((s: any, i: number) => `  ${i + 1}. Code/Name: ${s.code || s.name || "Subject"} | Credit: ${s.credits ?? "—"} | Grade: ${s.grade ?? "—"} | GP: ${s.grade_point ?? "—"}`).join("\n")}
-` : ""}
-
 ----------------------------------------------------------------------
-LAYER 3: AUTHORITATIVE RECORD VERIFICATION
-----------------------------------------------------------------------
-- Status:  ${report.record_verification?.status || "not_available"}
-- Source:  ${report.record_verification?.source || "Local System"}
-- Message: ${report.record_verification?.message || "No external database configured."}
-
+DISCLAIMER:
+These findings indicate potential visual or content inconsistencies and
+should not be interpreted as definitive proof of document authenticity or fraud.
 ======================================================================
-Generated by DocForensics AI Verification Suite
 `;
 
     const blob = new Blob([reportText], { type: "text/plain" });
@@ -103,7 +107,7 @@ Generated by DocForensics AI Verification Suite
             </div>
             <div>
               <h2 className="font-bold text-lg text-slate-900">
-                Document Forensic Report
+                Dual-Specialist Forensic Dossier
               </h2>
               <p className="font-mono text-xs text-slate-500">
                 {report.filename} &bull; ID: {report.session_id.slice(0, 8)}
@@ -111,167 +115,179 @@ Generated by DocForensics AI Verification Suite
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDownloadPdf}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download PDF Report</span>
+            </button>
+            <button
+              onClick={handleDownloadText}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300 transition-colors"
+            >
+              <span>TXT</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-lg transition-colors ml-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          <div className="space-y-6 text-sm text-slate-700">
-            {/* Executive Summary Card */}
-            <div className="p-5 rounded-xl border border-slate-200 bg-slate-50">
-              <h3 className="font-bold text-xs text-slate-500 uppercase tracking-wider mb-2">
-                Executive Assessment
-              </h3>
-              <p className="text-base font-semibold text-slate-900 leading-relaxed mb-4">
-                {report.assessment_summary}
+        <div className="p-6 overflow-y-auto space-y-6 text-sm text-slate-700">
+          {/* Executive Summary Card */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <div className="flex items-center gap-2 font-bold text-slate-900">
+              <Info className="w-4 h-4 text-blue-600" />
+              <span>Forensic Assessment</span>
+            </div>
+            <p className="text-xs leading-relaxed text-slate-700">
+              {report.assessment_summary}
+            </p>
+          </div>
+
+          {/* Evidence Channels Grid */}
+          <div>
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+              1. Multi-Evidence Channel Status
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="text-[11px] text-slate-500 font-medium">Physical Splicing</div>
+                <div className="text-xs font-bold mt-1 text-slate-900">
+                  {evSummary?.physical_visual_evidence ? (
+                    <span className="text-red-600">Traces Present</span>
+                  ) : (
+                    <span className="text-emerald-600">No Significant Evidence</span>
+                  )}
+                </div>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="text-[11px] text-slate-500 font-medium">Tiny-Text Digital</div>
+                <div className="text-xs font-bold mt-1 text-slate-900">
+                  {evSummary?.digital_text_visual_evidence ? (
+                    <span className="text-purple-600">Patterns Present</span>
+                  ) : (
+                    <span className="text-emerald-600">No Significant Evidence</span>
+                  )}
+                </div>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="text-[11px] text-slate-500 font-medium">Content Consistency</div>
+                <div className="text-xs font-bold mt-1 text-slate-900">
+                  {evSummary?.content_inconsistency ? (
+                    <span className="text-amber-600">Inconsistency</span>
+                  ) : (
+                    <span className="text-emerald-600">Consistent</span>
+                  )}
+                </div>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="text-[11px] text-slate-500 font-medium">Reference Match</div>
+                <div className="text-xs font-bold mt-1 text-slate-500">
+                  {report.record_verification?.status === "verified_match" ? (
+                    <span className="text-emerald-600">Verified</span>
+                  ) : report.record_verification?.status === "authoritative_mismatch" ? (
+                    <span className="text-red-600">Mismatch</span>
+                  ) : (
+                    <span>Not Configured</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Localized Suspicious Regions */}
+          <div>
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+              2. Suspicious Visual Findings ({report.suspicious_regions.length})
+            </h3>
+            {report.suspicious_regions.length === 0 ? (
+              <p className="text-xs italic text-slate-400">
+                No suspicious regions detected above decision threshold.
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200 text-xs">
-                <div>
-                  <span className="text-slate-400 block mb-0.5">Document File</span>
-                  <strong className="text-slate-900">{report.filename}</strong>
-                </div>
-                <div>
-                  <span className="text-slate-400 block mb-0.5">Verdict</span>
-                  <strong className="text-slate-900 uppercase">
-                    {report.analysis_status.replace(/_/g, " ")}
-                  </strong>
-                </div>
-                <div>
-                  <span className="text-slate-400 block mb-0.5">Tampering Confidence</span>
-                  <strong className="text-red-700 font-mono text-sm">
-                    {(report.highest_tampering_score * 100).toFixed(1)}%
-                  </strong>
-                </div>
-                <div>
-                  <span className="text-slate-400 block mb-0.5">Analysis Time</span>
-                  <strong className="text-slate-900 font-mono">
-                    {(report.performance_latency.total_pipeline_latency_ms / 1000).toFixed(2)}s
-                  </strong>
-                </div>
-              </div>
-            </div>
-
-            {/* Layer 1: Suspicious Regions Table */}
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Layers className="w-4 h-4 text-blue-600" />
-                <h3 className="font-bold text-xs text-slate-700 uppercase tracking-wider">
-                  Visual Forensic Analysis ({report.suspicious_regions.length} Flagged Areas)
-                </h3>
-              </div>
-
-              {report.suspicious_regions.length === 0 ? (
-                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs flex items-center gap-3">
-                  <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>No localized visual manipulation evidence was detected on this document.</span>
-                </div>
-              ) : (
-                <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold">
-                        <th className="p-3">Area ID</th>
-                        <th className="p-3">Type</th>
-                        <th className="p-3">Tampering Probability</th>
-                        <th className="p-3">Coverage</th>
-                        <th className="p-3">Extracted Text</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 font-mono">
-                      {report.suspicious_regions.map((r) => (
-                        <tr key={r.region_id} className="hover:bg-slate-50">
-                          <td className="p-3 font-bold">Area #{r.region_id}</td>
-                          <td className="p-3 font-sans capitalize">{r.region_type.replace(/_/g, " ")}</td>
-                          <td className="p-3 text-red-700 font-bold">
-                            {(r.max_tampering_score * 100).toFixed(1)}%
-                          </td>
-                          <td className="p-3">{r.percentage_of_document_area.toFixed(2)}%</td>
-                          <td className="p-3 font-sans font-bold text-slate-900">
-                            {r.has_associated_text && r.ocr_text ? `"${r.ocr_text}"` : "—"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-
-            {/* Layer 2: Content Consistency Table */}
-            {checks.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Calculator className="w-4 h-4 text-blue-600" />
-                  <h3 className="font-bold text-xs text-slate-700 uppercase tracking-wider">
-                    Content Consistency &amp; Mathematical Verification ({checks.length} Checks)
-                  </h3>
-                </div>
-
-                <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold">
-                        <th className="p-3">Check Rule</th>
-                        <th className="p-3">Status</th>
-                        <th className="p-3">Displayed</th>
-                        <th className="p-3">Calculated</th>
-                        <th className="p-3">Explanation</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 font-mono text-xs">
-                      {checks.map((c) => (
-                        <tr key={c.check_id} className="hover:bg-slate-50">
-                          <td className="p-3 font-sans font-bold text-slate-900">{c.check_name}</td>
-                          <td className="p-3">
-                            <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                c.status === "match"
-                                  ? "bg-emerald-100 text-emerald-800"
-                                  : c.status === "impossible_value"
-                                  ? "bg-purple-100 text-purple-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
-                            >
-                              {c.status.toUpperCase()}
-                            </span>
-                          </td>
-                          <td className="p-3 font-bold text-slate-800">{c.displayed_value || "—"}</td>
-                          <td className="p-3 font-bold text-slate-800">{c.calculated_value || "—"}</td>
-                          <td className="p-3 font-sans text-slate-600">{c.explanation}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+            ) : (
+              <div className="space-y-2">
+                {report.suspicious_regions.map((r) => (
+                  <div
+                    key={r.region_id}
+                    className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-4 text-xs"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold px-1.5 py-0.5 bg-slate-200 text-slate-800 rounded">
+                          #{r.region_id}
+                        </span>
+                        <span className="font-semibold text-slate-900">
+                          {(r.evidence_sources || ["Visual Specialist"]).join(" + ")}
+                        </span>
+                      </div>
+                      {r.has_associated_text && r.ocr_text && (
+                        <div className="font-mono text-slate-600">
+                          OCR: &ldquo;{r.ocr_text}&rdquo;
+                        </div>
+                      )}
+                      <div className="text-slate-500 text-[11px]">
+                        BBox: [{r.bbox.join(", ")}] &bull; Area: {r.percentage_of_document_area.toFixed(2)}%
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-[11px] text-slate-400">Evidence Score</div>
+                      <div className="font-mono font-bold text-sm text-slate-900">
+                        {(r.evidence_score ?? r.mean_tampering_score).toFixed(3)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
+          </div>
 
-            {/* Notice */}
-            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500">
-              <strong className="text-slate-700">Notice:</strong> Results indicate statistical visual manipulation patterns and rule-based consistency checks. For official legal proceedings, corroborating manual analysis is recommended.
+          {/* Content Consistency Table */}
+          {checks.length > 0 && (
+            <div>
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                3. Content Consistency &amp; Semantic Rules
+              </h3>
+              <div className="border border-slate-200 rounded-xl overflow-hidden text-xs">
+                <table className="w-full text-left">
+                  <thead className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                    <tr>
+                      <th className="p-2.5">Rule / Check</th>
+                      <th className="p-2.5">Extracted Value</th>
+                      <th className="p-2.5">Calculated</th>
+                      <th className="p-2.5 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {checks.map((c) => (
+                      <tr key={c.check_id} className="bg-white hover:bg-slate-50">
+                        <td className="p-2.5 font-medium">{c.check_name}</td>
+                        <td className="p-2.5 font-mono">{c.displayed_value || "—"}</td>
+                        <td className="p-2.5 font-mono">{c.calculated_value || "—"}</td>
+                        <td className="p-2.5 text-right font-bold">
+                          {c.status === "match" ? (
+                            <span className="text-emerald-600">MATCH</span>
+                          ) : (
+                            <span className="text-red-600">{c.status.toUpperCase()}</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </div>
+          )}
 
-        {/* Modal Footer */}
-        <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
-          <div className="text-xs text-slate-500 hidden sm:block">
-            DocForensics AI Verification Report
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleDownloadReport}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 transition-colors shadow-sm"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download Report</span>
-            </button>
+          {/* Conservative Disclaimer */}
+          <div className="p-3.5 bg-slate-100 rounded-xl border border-slate-200 text-[11px] text-slate-500 leading-relaxed">
+            <strong>Disclaimer:</strong> {evSummary?.disclaimer || "These findings indicate potential visual or content inconsistencies and should not be interpreted as definitive proof of document authenticity or fraud."}
           </div>
         </div>
       </div>

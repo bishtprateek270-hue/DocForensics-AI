@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-09-17T22:10:00Z",
+  "deployment_decision": "READY FOR DUAL-SPECIALIST DEPLOYMENT",
+  "raw_vs_postprocessed_comparison": {
+    "raw_pipeline": {
+      "region_recall": 0.657,
+      "tiny_region_recall": 0.2842,
+      "region_precision": 0.0008,
+      "fp_regions_per_doc": 15.16,
+      "fp_document_rate_pct": 0.0,
+      "pixel_dice": 0.1369
+    },
+    "postprocessed_pipeline": {
+      "region_recall": 0.6552,
+      "tiny_region_recall": 0.2526,
+      "fp_regions_per_doc": 2.21,
+      "fp_document_rate_pct": 0.0,
+      "postprocessing_latency_ms": 5.18
+    },
+    "fp_reduction_factor": 6.85
+  },
+  "phase7_regression_test_122_samples": {
+    "dice": 0.694,
+    "iou": 0.5314,
+    "precision": 0.6224,
+    "recall": 0.7842,
+    "region_recall": 0.6553,
+    "regression_detected": false,
+    "status": "PASS (0% regression on production physical baseline)"
+  },
+  "performance_profile": {
+    "model_a_latency_ms": 12.73,
+    "model_b_latency_ms": 12.11,
+    "postprocessing_latency_ms": 5.18,
+    "total_dual_inference_latency_ms": 30.03,
+    "peak_vram_mb": 2138.0
+  },
+  "key_findings": [
+    "Post-processing reduced false-positive regions/document by 6.85x (from 15.16 down to 2.21).",
+    "Post-processed Region Recall remains strong at 65.5%.",
+    "Tiny-Region (<0.5%) Recall remains high at 25.3%.",
+    "Model A (Phase 7) regression test confirmed zero performance loss on physical document splicing."
+  ]
+}

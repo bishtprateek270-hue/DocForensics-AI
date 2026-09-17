@@ -1,6 +1,6 @@
 /**
  * DocForensics AI — Frontend TypeScript Types
- * Exact 1:1 match with backend/schemas.py Pydantic schemas
+ * Exact 1:1 match with backend/schemas.py Pydantic schemas (Dual-Specialist Fusion)
  */
 
 export type AnalysisStatus =
@@ -20,7 +20,22 @@ export interface SuspiciousRegion {
   ocr_confidence: number;
   has_associated_text: boolean;
   region_type: string;
+  evidence_sources?: string[];
+  evidence_score?: number;
+  explanation?: string;
   crop_url: string;
+}
+
+export interface EvidenceSummary {
+  physical_visual_evidence: boolean;
+  digital_text_visual_evidence: boolean;
+  content_inconsistency: boolean;
+  reference_mismatch: boolean;
+  physical_region_count: number;
+  text_region_count: number;
+  fused_region_count: number;
+  status_message: string;
+  disclaimer: string;
 }
 
 export interface PerformanceLatency {
@@ -82,11 +97,13 @@ export interface ForensicReport {
   visual_analysis?: VisualAnalysis | null;
   content_analysis?: ContentAnalysis | null;
   record_verification?: RecordVerification | null;
+  evidence_summary?: EvidenceSummary | null;
   performance_latency: PerformanceLatency;
   suspicious_regions: SuspiciousRegion[];
   image_url: string;
   heatmap_url: string;
   overlay_url: string;
+  pdf_report_url?: string;
 }
 
 export interface HealthResponse {

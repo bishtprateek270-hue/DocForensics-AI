@@ -28,7 +28,25 @@ class SuspiciousRegionSchema(BaseModel):
     ocr_confidence: float = Field(..., description="Recognition confidence score of extracted text [0.0 - 1.0]")
     has_associated_text: bool = Field(..., description="Whether OCR detected text in this region")
     region_type: str = Field(..., description="Conservative heuristic visual category")
+    evidence_sources: List[str] = Field(default_factory=lambda: ["Phase 7 Physical Forensic Model"], description="Contributing specialist models")
+    evidence_score: float = Field(default=0.5, description="Composite region evidence score [0.0 - 1.0]")
+    explanation: Optional[str] = Field(None, description="Conservative forensic explanation of finding")
     crop_url: Optional[str] = Field(None, description="API URL to download high-resolution region crop image")
+
+
+class EvidenceSummarySchema(BaseModel):
+    physical_visual_evidence: bool = Field(..., description="Whether physical/image tampering visual traces are present")
+    digital_text_visual_evidence: bool = Field(..., description="Whether digital text modification visual traces are present")
+    content_inconsistency: bool = Field(..., description="Whether semantic or mathematical inconsistency was detected")
+    reference_mismatch: bool = Field(..., description="Whether mismatch against verified reference was detected")
+    physical_region_count: int = Field(default=0, description="Count of physical/image suspicious regions")
+    text_region_count: int = Field(default=0, description="Count of digital text suspicious regions")
+    fused_region_count: int = Field(default=0, description="Count of multi-specialist overlapping regions")
+    status_message: str = Field(..., description="Conservative summary statement")
+    disclaimer: str = Field(
+        default="These findings indicate potential visual or content inconsistencies and should not be interpreted as definitive proof of document authenticity or fraud.",
+        description="Mandatory forensic disclaimer",
+    )
 
 
 class ConsistencyCheckSchema(BaseModel):
@@ -84,7 +102,7 @@ class ForensicAnalysisReport(BaseModel):
         description="no_significant_tampering_evidence_detected | suspicious_visual_manipulation_detected | manual_review_recommended",
     )
     assessment_summary: str = Field(..., description="Conservative forensic summary text")
-    model_architecture: str = Field(default="dual_stream_rgb_srm_forensic", description="Model architecture used")
+    model_architecture: str = Field(default="dual_specialist_fusion_pipeline", description="Model architecture used")
     inference_threshold: float = Field(default=0.50, description="Decision threshold applied")
     original_resolution: List[int] = Field(..., description="Original image dimensions [width, height]")
     
@@ -101,11 +119,15 @@ class ForensicAnalysisReport(BaseModel):
     # Layer 3: Authoritative Record Verification (Modular interface)
     record_verification: Optional[RecordVerificationSchema] = Field(None, description="Authoritative record verification findings")
 
+    # Multi-Evidence Channel Summary
+    evidence_summary: Optional[EvidenceSummarySchema] = Field(None, description="Conservative multi-evidence breakdown")
+
     # Performance & Streaming Assets
     performance_latency: PerformanceLatencySchema
     image_url: str = Field(..., description="API endpoint to fetch original image/page")
     heatmap_url: str = Field(..., description="API endpoint to fetch probability heatmap PNG")
     overlay_url: str = Field(..., description="API endpoint to fetch localization overlay PNG")
+    pdf_report_url: Optional[str] = Field(None, description="API endpoint to download formal PDF forensic report")
 
 
 class HealthResponse(BaseModel):
