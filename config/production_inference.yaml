@@ -1,0 +1,44 @@
+# DocForensics AI — Production Inference Configuration (Phase 11 Frozen)
+production_release:
+  version: "1.0.0"
+  model_name: "DualStreamForensicNet"
+  checkpoint_path: "checkpoints/dual_stream_best.pth"
+  expected_sha256: "376b074999a95c37a33cd0ca9295532ec4b96936919fc84982c4a7230f456d15"
+  device: "auto"
+  amp_enabled: false # Enforce pure deterministic FP32 for production inference
+
+inference_parameters:
+  input_resolution: [512, 512]
+  canonical_decision_threshold: 0.50
+  connected_component_filtering:
+    min_region_pixels: 16
+    connectivity: 8
+  region_iou_match_threshold: 0.25
+
+ocr_engine:
+  framework: "easyocr"
+  languages: ["en"]
+  gpu_enabled: true
+  min_confidence_threshold: 0.30
+
+content_consistency:
+  enabled: true
+  supported_doc_types: ["academic_result", "invoice"]
+  default_grading_scheme: "standard_ugc_10point"
+
+reference_verification:
+  enabled: true
+  diff_threshold: 35
+  min_diff_area: 24
+
+api_security:
+  max_upload_size_bytes: 15728640 # 15 MB
+  allowed_mime_types:
+    - "image/png"
+    - "image/jpeg"
+    - "image/jpg"
+    - "application/pdf"
+  cleanup_temp_files: true
+  hide_internal_stack_traces: true
+
+disclaimer: "Results indicate potential visual manipulation or content inconsistencies. Absence of detected evidence does not establish document authenticity."

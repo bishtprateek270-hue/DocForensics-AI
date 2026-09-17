@@ -1,0 +1,137 @@
+{
+  "audit_version": "Phase 10 Benchmark Audit",
+  "total_samples": 800,
+  "authentic_samples": 170,
+  "tampered_samples": 630,
+  "sample_imbalance_ratio_tampered_to_authentic": 3.71,
+  "mean_positive_pixel_fraction": 0.0145,
+  "split_distribution": {
+    "train": 560,
+    "test": 122,
+    "val": 118
+  },
+  "source_type_distribution": {
+    "synthetic": 750,
+    "public": 50
+  },
+  "manipulation_category_distribution": {
+    "none": 170,
+    "text_replacement": 60,
+    "number_amount_replacement": 60,
+    "date_replacement": 60,
+    "copy_move_intra": 60,
+    "copy_paste_inter": 60,
+    "signature_manipulation": 60,
+    "photo_replacement": 60,
+    "stamp_seal_manipulation": 60,
+    "region_removal": 60,
+    "local_inpainting": 60,
+    "public_realtext_tampered": 30
+  },
+  "per_split_breakdown": {
+    "train": {
+      "total_samples": 560,
+      "authentic_samples": 119,
+      "tampered_samples": 441,
+      "categories": {
+        "none": 119,
+        "local_inpainting": 44,
+        "region_removal": 44,
+        "text_replacement": 43,
+        "photo_replacement": 43,
+        "number_amount_replacement": 43,
+        "stamp_seal_manipulation": 43,
+        "copy_paste_inter": 41,
+        "signature_manipulation": 41,
+        "date_replacement": 39,
+        "copy_move_intra": 39,
+        "public_realtext_tampered": 21
+      },
+      "families_count": 140
+    },
+    "val": {
+      "total_samples": 118,
+      "authentic_samples": 26,
+      "tampered_samples": 92,
+      "categories": {
+        "none": 26,
+        "region_removal": 11,
+        "local_inpainting": 11,
+        "photo_replacement": 9,
+        "number_amount_replacement": 9,
+        "text_replacement": 9,
+        "stamp_seal_manipulation": 9,
+        "copy_paste_inter": 8,
+        "signature_manipulation": 8,
+        "date_replacement": 7,
+        "copy_move_intra": 7,
+        "public_realtext_tampered": 4
+      },
+      "families_count": 30
+    },
+    "test": {
+      "total_samples": 122,
+      "authentic_samples": 25,
+      "tampered_samples": 97,
+      "categories": {
+        "none": 25,
+        "date_replacement": 14,
+        "copy_move_intra": 14,
+        "copy_paste_inter": 11,
+        "signature_manipulation": 11,
+        "text_replacement": 8,
+        "number_amount_replacement": 8,
+        "photo_replacement": 8,
+        "stamp_seal_manipulation": 8,
+        "region_removal": 5,
+        "local_inpainting": 5,
+        "public_realtext_tampered": 5
+      },
+      "families_count": 30
+    }
+  },
+  "leakage_verification": {
+    "zero_leakage_verified": true,
+    "train_val_overlap_count": 0,
+    "train_test_overlap_count": 0,
+    "val_test_overlap_count": 0,
+    "train_val_leaked_families": [],
+    "train_test_leaked_families": [],
+    "val_test_leaked_families": []
+  },
+  "tampered_area_distribution": {
+    "mean_tampered_area_pct": 1.8408,
+    "median_tampered_area_pct": 1.1604,
+    "min_tampered_area_pct": 0.1888,
+    "max_tampered_area_pct": 9.2814,
+    "std_tampered_area_pct": 1.7957,
+    "quantiles": {
+      "p10": 0.5094,
+      "p25": 0.7475,
+      "p50": 1.1604,
+      "p75": 2.0532,
+      "p90": 4.3657
+    },
+    "area_buckets": {
+      "tiny_under_0_5pct": 56,
+      "small_0_5_to_1_5pct": 327,
+      "medium_1_5_to_4_0pct": 176,
+      "large_above_4_0pct": 71
+    }
+  },
+  "resolution_distribution": {
+    "800x1050": 300,
+    "900x600": 150,
+    "950x700": 150,
+    "600x900": 150,
+    "1159x1500": 31,
+    "1061x1500": 10,
+    "1500x1061": 3,
+    "1500x1159": 1,
+    "1500x1018": 1,
+    "1060x1500": 1,
+    "1145x1500": 1,
+    "971x1500": 1,
+    "1038x1500": 1
+  }
+}

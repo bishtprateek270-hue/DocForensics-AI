@@ -12,6 +12,34 @@ import numpy as np
 from typing import Dict, Any, Union
 
 
+def compute_binary_metrics(pred_binary: np.ndarray, gt_mask: np.ndarray, smooth: float = 1e-6) -> Dict[str, float]:
+    """
+    Computes Dice, IoU, Precision, and Recall on 2D binary numpy arrays.
+    Handles authentic samples (gt_mask all zeros) cleanly:
+    - 0 False Positives -> 1.0 (perfect)
+    - >0 False Positives -> 0.0
+    """
+    p = (pred_binary > 0).astype(np.float32).flatten()
+    t = (gt_mask > 0).astype(np.float32).flatten()
+
+    tp = float(np.sum(p * t))
+    fp = float(np.sum(p * (1.0 - t)))
+    fn = float(np.sum((1.0 - p) * t))
+    total_pos = float(np.sum(t))
+
+    if total_pos == 0.0:
+        if fp == 0.0:
+            return {"dice": 1.0, "iou": 1.0, "precision": 1.0, "recall": 1.0}
+        else:
+            return {"dice": 0.0, "iou": 0.0, "precision": 0.0, "recall": 1.0}
+    else:
+        dice = (2.0 * tp + smooth) / (2.0 * tp + fp + fn + smooth)
+        iou = (tp + smooth) / (tp + fp + fn + smooth)
+        prec = (tp + smooth) / (tp + fp + smooth)
+        rec = (tp + smooth) / (tp + fn + smooth)
+        return {"dice": float(dice), "iou": float(iou), "precision": float(prec), "recall": float(rec)}
+
+
 def compute_batch_metrics(
     logits_or_probs: torch.Tensor,
     targets: torch.Tensor,

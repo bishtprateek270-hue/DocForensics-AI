@@ -389,6 +389,7 @@ class DocForensicsPipeline:
                 "peak_vram_mb": peak_vram_mb,
             },
             "suspicious_regions": serialized_regions,
+            "ocr_entries": [e.to_dict() for e in ocr_entries],
             "visual_report_path": str(visual_report_path) if visual_report_path else None,
             "region_crop_paths": saved_crop_paths,
         }

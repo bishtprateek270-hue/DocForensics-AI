@@ -1,6 +1,7 @@
 """
-DocForensics AI — FastAPI Pydantic Schemas (Phase 9)
+DocForensics AI — FastAPI Pydantic Schemas
 Defines clean, sanitized request and response data models without exposing local filesystem paths.
+Includes separate schemas for Visual Forensics, Content Consistency, and Authoritative Verification.
 """
 
 from typing import List, Optional, Dict, Any
@@ -30,6 +31,44 @@ class SuspiciousRegionSchema(BaseModel):
     crop_url: Optional[str] = Field(None, description="API URL to download high-resolution region crop image")
 
 
+class ConsistencyCheckSchema(BaseModel):
+    check_id: str = Field(..., description="Unique check identifier")
+    check_name: str = Field(..., description="Human-readable check title")
+    displayed_value: str = Field(..., description="Value extracted directly from the document")
+    calculated_value: str = Field(..., description="Value derived mathematically or from grading rules")
+    status: str = Field(..., description="match | mismatch | impossible_value | unavailable")
+    explanation: str = Field(..., description="Detailed explanation of the check result")
+
+
+class ContentAnalysisSchema(BaseModel):
+    document_type: str = Field(..., description="academic_result | invoice | certificate | generic_document | unknown")
+    document_type_confidence: float = Field(default=0.8, description="Classification confidence [0.0 - 1.0]")
+    status: str = Field(
+        ...,
+        description="content_consistent | content_inconsistency_detected | insufficient_information"
+    )
+    summary: str = Field(..., description="High-level content consistency summary")
+    checks: List[ConsistencyCheckSchema] = Field(default_factory=list)
+    extracted_fields: Dict[str, Any] = Field(default_factory=dict)
+
+
+class RecordVerificationSchema(BaseModel):
+    status: str = Field(
+        default="not_available",
+        description="verified_match | authoritative_mismatch | record_not_found | not_available"
+    )
+    source: str = Field(default="Local System", description="Authoritative record source name")
+    message: str = Field(default="No external database configured for this document.", description="Verification status explanation")
+    mismatches: Optional[List[Dict[str, Any]]] = Field(default=None, description="List of mismatched fields if any")
+
+
+class VisualAnalysisSchema(BaseModel):
+    analysis_status: str = Field(..., description="Visual tampering classification")
+    suspicious_region_count: int = Field(..., description="Number of suspicious visual regions")
+    highest_tampering_score: float = Field(..., description="Peak visual tampering score")
+    total_suspicious_area_percent: float = Field(..., description="Percentage of document area flagged")
+
+
 class ForensicAnalysisReport(BaseModel):
     session_id: str = Field(..., description="Unique analysis session UUID")
     document_id: str = Field(..., description="Clean document filename or identifier")
@@ -38,6 +77,8 @@ class ForensicAnalysisReport(BaseModel):
     page_number: Optional[int] = Field(1, description="Analyzed page number for multi-page documents")
     total_pages: Optional[int] = Field(1, description="Total pages in source document")
     timestamp_utc: str = Field(..., description="ISO 8601 UTC timestamp of analysis")
+    
+    # Combined Overall Status
     analysis_status: str = Field(
         ...,
         description="no_significant_tampering_evidence_detected | suspicious_visual_manipulation_detected | manual_review_recommended",
@@ -46,11 +87,22 @@ class ForensicAnalysisReport(BaseModel):
     model_architecture: str = Field(default="dual_stream_rgb_srm_forensic", description="Model architecture used")
     inference_threshold: float = Field(default=0.50, description="Decision threshold applied")
     original_resolution: List[int] = Field(..., description="Original image dimensions [width, height]")
+    
+    # Layer 1: Visual Forensics
     suspicious_region_count: int = Field(..., description="Number of suspicious regions detected")
     total_suspicious_area_percent: float = Field(..., description="Total suspicious pixel area percentage")
     highest_tampering_score: float = Field(..., description="Highest localized tampering score")
-    performance_latency: PerformanceLatencySchema
     suspicious_regions: List[SuspiciousRegionSchema] = Field(default_factory=list)
+    visual_analysis: Optional[VisualAnalysisSchema] = Field(None, description="Structured visual forensic layer findings")
+
+    # Layer 2: Content Consistency Analysis
+    content_analysis: Optional[ContentAnalysisSchema] = Field(None, description="Structured content consistency layer findings")
+
+    # Layer 3: Authoritative Record Verification (Modular interface)
+    record_verification: Optional[RecordVerificationSchema] = Field(None, description="Authoritative record verification findings")
+
+    # Performance & Streaming Assets
+    performance_latency: PerformanceLatencySchema
     image_url: str = Field(..., description="API endpoint to fetch original image/page")
     heatmap_url: str = Field(..., description="API endpoint to fetch probability heatmap PNG")
     overlay_url: str = Field(..., description="API endpoint to fetch localization overlay PNG")
@@ -58,13 +110,14 @@ class ForensicAnalysisReport(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = Field(default="healthy", description="API health status")
-    version: str = Field(default="1.0.0", description="DocForensics AI API version")
+    version: str = Field(default="2.0.0", description="DocForensics AI API version")
     cuda_available: bool = Field(..., description="Whether CUDA is active")
     gpu_name: str = Field(..., description="NVIDIA GPU model name")
     vram_total_gb: float = Field(..., description="Total GPU VRAM in GB")
     vram_allocated_mb: float = Field(..., description="Currently allocated VRAM in MB")
     model_checkpoint_loaded: str = Field(..., description="Active checkpoint name")
-    ocr_engine: str = Field(default="EasyOCR (CRAFT + CRNN)", description="Active OCR engine")
+    ocr_engine: str = Field(default="EasyOCR (CRAFT + CRNN with PyTorch CUDA)", description="Active OCR engine")
+    content_consistency_engine: str = Field(default="Active (Deterministic Rules & Layout Extractor)", description="Content engine status")
 
 
 class ErrorResponse(BaseModel):

@@ -35,9 +35,9 @@ from backend.service import ForensicService
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Initializes ML model and OCR pipeline once on startup."""
+    """Initializes ML model and OCR pipeline once on startup with integrity verification."""
     print("=" * 75)
-    print("    DocForensics AI — FastAPI Server Starting Up                     ")
+    print("    DocForensics AI — FastAPI Server Starting Up (Phase 11 Production) ")
     print("=" * 75)
     service = ForensicService.get_instance()
     service.initialize()
@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="DocForensics AI API",
     description="Production REST API for Document Tampering Detection, Localization, and Forensic Reporting.",
-    version="1.0.0",
+    version="1.1.0",
     lifespan=lifespan,
 )
 
@@ -61,6 +61,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+MAX_UPLOAD_SIZE = 15 * 1024 * 1024  # 15 MB
+
+
+def validate_file_bytes(content: bytes, filename: str) -> str:
+    """Validates file magic bytes and extensions to prevent arbitrary upload."""
+    if len(content) == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Uploaded file is empty (0 bytes).")
+    if len(content) > MAX_UPLOAD_SIZE:
+        raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="File exceeds maximum allowed size (15 MB).")
+
+    ext = Path(filename).suffix.lower()
+    # Magic bytes check
+    if content.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "png"
+    elif content.startswith(b"\xff\xd8\xff"):
+        return "jpeg"
+    elif content.startswith(b"%PDF"):
+        return "pdf"
+    elif ext in [".jpg", ".jpeg", ".png", ".pdf", ".bmp", ".tif", ".tiff"]:
+        return ext.lstrip(".")
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported or corrupted file format. Allowed formats: PNG, JPG, JPEG, PDF"
+        )
+
 
 @app.get("/api/health", response_model=HealthResponse, tags=["System"])
 async def get_health_status():
@@ -70,8 +96,8 @@ async def get_health_status():
     ckpt_path = CHECKPOINT_DIR / "dual_stream_best.pth"
 
     return HealthResponse(
-        status="healthy",
-        version="1.0.0",
+        status="healthy" if ckpt_path.exists() else "model_unavailable",
+        version="1.1.0",
         cuda_available=diag["cuda_available"],
         gpu_name=diag["gpu_name"] if diag["cuda_available"] else "CPU",
         vram_total_gb=vram.get("total_gb", 0.0),
@@ -95,37 +121,64 @@ async def analyze_document(
     Accepts an uploaded document file, executes dual-stream forensic inference,
     localizes suspicious regions, associates OCR text evidence, and returns a structured report.
     """
-    filename = file.filename or "uploaded_document.png"
-    ext = Path(filename).suffix.lower()
-
-    if ext not in [".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".pdf"]:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Unsupported file format '{ext}'. Supported formats: JPG, JPEG, PNG, PDF",
-        )
-
+    raw_filename = Path(file.filename or "document.png").name  # Sanitize against path traversal
     try:
         content = await file.read()
-        if len(content) == 0:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Uploaded file is empty (0 bytes).",
-            )
+        validate_file_bytes(content, raw_filename)
 
         service = ForensicService.get_instance()
         report = service.process_document(
             file_bytes=content,
-            filename=filename,
+            filename=raw_filename,
             page_number=page_number,
         )
         return report
 
+    except HTTPException:
+        raise
     except ValueError as ve:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:
+        # Sanitize internal error message
+        err_msg = str(e).split("\n")[0]
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Forensic analysis failed: {str(e)}",
+            detail=f"Forensic analysis failed during processing: {err_msg}",
+        )
+
+
+@app.post(
+    "/api/reference-verify",
+    tags=["Reference Verification"],
+)
+async def reference_verify_document(
+    test_file: UploadFile = File(..., description="Document under analysis"),
+    reference_file: UploadFile = File(..., description="Trusted original reference document"),
+):
+    """
+    Optional comparison mode comparing test document against a trusted original reference.
+    Labeled explicitly as 'Reference comparison' (NOT 'AI tampering detection').
+    """
+    from src.forensics.reference_verification import compare_with_reference
+    try:
+        test_bytes = await test_file.read()
+        ref_bytes = await reference_file.read()
+
+        validate_file_bytes(test_bytes, test_file.filename or "test.png")
+        validate_file_bytes(ref_bytes, reference_file.filename or "ref.png")
+
+        test_img = Image.open(io.BytesIO(test_bytes)).convert("RGB")
+        ref_img = Image.open(io.BytesIO(ref_bytes)).convert("RGB")
+
+        result = compare_with_reference(test_img, ref_img)
+        return JSONResponse(content=result)
+    except HTTPException:
+        raise
+    except Exception as e:
+        err_msg = str(e).split("\n")[0]
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Reference verification failed: {err_msg}",
         )
 
 

@@ -12,7 +12,7 @@ import pandas as pd
 import torch
 from pathlib import Path
 from typing import Dict, Any, Tuple, Optional
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
 from config import BASE_DIR, METADATA_CSV, cfg
 from src.preprocessing.augmentations import (
@@ -115,6 +115,12 @@ class DocForensicsDataset(Dataset):
             "source_type": str(row.get("source_type", "synthetic")),
             "manipulation_type": str(row.get("manipulation_type", "none")),
             "split": self.split,
+            "metadata": {
+                "sample_id": sample_id,
+                "manipulation_type": str(row.get("manipulation_type", "none")),
+                "tampered_area_percentage": float(row.get("tampered_area_percentage", 0.0)),
+                "is_tampered": int(row["is_tampered"]),
+            }
         }
         return item
 
@@ -150,3 +156,44 @@ class DocForensicsDataset(Dataset):
         )
 
         return orig_rgb, aug_img, mask_gray, aug_mask, row.to_dict()
+
+
+def create_dataloaders(
+    metadata_path: Path = METADATA_CSV,
+    batch_size: int = 4,
+    image_size: Tuple[int, int] = (512, 512),
+    num_workers: int = 0,
+    pin_memory: bool = False,
+) -> Tuple[DataLoader, DataLoader, DataLoader]:
+    """
+    Creates train, validation, and test PyTorch DataLoaders.
+    """
+    train_dataset = DocForensicsDataset(metadata_path=metadata_path, split="train", image_size=image_size)
+    val_dataset = DocForensicsDataset(metadata_path=metadata_path, split="val", image_size=image_size)
+    test_dataset = DocForensicsDataset(metadata_path=metadata_path, split="test", image_size=image_size)
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        drop_last=False,
+    )
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        drop_last=False,
+    )
+    test_loader = DataLoader(
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        drop_last=False,
+    )
+    return train_loader, val_loader, test_loader

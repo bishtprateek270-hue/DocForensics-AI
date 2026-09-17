@@ -31,6 +31,38 @@ export interface PerformanceLatency {
   peak_vram_mb: number;
 }
 
+export interface ConsistencyCheck {
+  check_id: string;
+  check_name: string;
+  displayed_value: string;
+  calculated_value: string;
+  status: "match" | "mismatch" | "impossible_value" | "unavailable" | string;
+  explanation: string;
+}
+
+export interface ContentAnalysis {
+  document_type: string;
+  document_type_confidence: number;
+  status: "content_consistent" | "content_inconsistency_detected" | "insufficient_information" | string;
+  summary: string;
+  checks: ConsistencyCheck[];
+  extracted_fields: Record<string, any>;
+}
+
+export interface RecordVerification {
+  status: "verified_match" | "authoritative_mismatch" | "record_not_found" | "not_available" | string;
+  source: string;
+  message: string;
+  mismatches?: Array<Record<string, any>> | null;
+}
+
+export interface VisualAnalysis {
+  analysis_status: string;
+  suspicious_region_count: number;
+  highest_tampering_score: number;
+  total_suspicious_area_percent: number;
+}
+
 export interface ForensicReport {
   session_id: string;
   document_id: string;
@@ -47,6 +79,9 @@ export interface ForensicReport {
   suspicious_region_count: number;
   total_suspicious_area_percent: number;
   highest_tampering_score: number;
+  visual_analysis?: VisualAnalysis | null;
+  content_analysis?: ContentAnalysis | null;
+  record_verification?: RecordVerification | null;
   performance_latency: PerformanceLatency;
   suspicious_regions: SuspiciousRegion[];
   image_url: string;

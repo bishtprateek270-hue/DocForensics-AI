@@ -1,0 +1,687 @@
+{
+  "benchmark_timestamp_utc": "2026-09-17T14:06:49.331894+00:00",
+  "device": "cuda",
+  "test_samples_count": 122,
+  "models": {
+    "U-Net": {
+      "checkpoint_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\unet_best.pth",
+      "decision_threshold": 0.5,
+      "multiscale_fusion": false,
+      "test_metrics": {
+        "test_dice": 0.5245,
+        "test_iou": 0.458,
+        "test_precision": 0.7348,
+        "test_recall": 0.5943,
+        "hard_negative_fpr": 0.28,
+        "avg_inference_latency_ms": 13.5
+      },
+      "per_area_bucket_metrics": {
+        "tiny": {
+          "sample_count": 8,
+          "mean_dice": 0.258,
+          "mean_iou": 0.1705,
+          "mean_precision": 0.6364,
+          "mean_recall": 0.2654
+        },
+        "small": {
+          "sample_count": 52,
+          "mean_dice": 0.4182,
+          "mean_iou": 0.3328,
+          "mean_precision": 0.6853,
+          "mean_recall": 0.4601
+        },
+        "medium": {
+          "sample_count": 28,
+          "mean_dice": 0.5159,
+          "mean_iou": 0.4184,
+          "mean_precision": 0.8003,
+          "mean_recall": 0.4811
+        },
+        "large": {
+          "sample_count": 9,
+          "mean_dice": 0.8596,
+          "mean_iou": 0.8325,
+          "mean_precision": 0.9455,
+          "mean_recall": 0.8869
+        },
+        "authentic": {
+          "sample_count": 25,
+          "mean_dice": 0.72,
+          "mean_iou": 0.72,
+          "mean_precision": 0.72,
+          "mean_recall": 1.0
+        }
+      },
+      "per_category_metrics": {
+        "none": {
+          "sample_count": 25,
+          "mean_dice": 0.72,
+          "mean_iou": 0.72,
+          "mean_precision": 0.72,
+          "mean_recall": 1.0
+        },
+        "text_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.7005,
+          "mean_iou": 0.5581,
+          "mean_precision": 0.5963,
+          "mean_recall": 0.9462
+        },
+        "number_amount_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.5496,
+          "mean_iou": 0.4369,
+          "mean_precision": 0.6834,
+          "mean_recall": 0.5822
+        },
+        "date_replacement": {
+          "sample_count": 14,
+          "mean_dice": 0.6253,
+          "mean_iou": 0.5034,
+          "mean_precision": 0.7598,
+          "mean_recall": 0.5637
+        },
+        "copy_move_intra": {
+          "sample_count": 14,
+          "mean_dice": 0.0373,
+          "mean_iou": 0.0241,
+          "mean_precision": 0.712,
+          "mean_recall": 0.0241
+        },
+        "copy_paste_inter": {
+          "sample_count": 11,
+          "mean_dice": 0.756,
+          "mean_iou": 0.6257,
+          "mean_precision": 0.825,
+          "mean_recall": 0.74
+        },
+        "signature_manipulation": {
+          "sample_count": 11,
+          "mean_dice": 0.6719,
+          "mean_iou": 0.5451,
+          "mean_precision": 0.9055,
+          "mean_recall": 0.6075
+        },
+        "photo_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.967,
+          "mean_iou": 0.9366,
+          "mean_precision": 0.9387,
+          "mean_recall": 0.9977
+        },
+        "stamp_seal_manipulation": {
+          "sample_count": 8,
+          "mean_dice": 0.3698,
+          "mean_iou": 0.2479,
+          "mean_precision": 0.5363,
+          "mean_recall": 0.3788
+        },
+        "region_removal": {
+          "sample_count": 5,
+          "mean_dice": 0.0584,
+          "mean_iou": 0.0331,
+          "mean_precision": 0.791,
+          "mean_recall": 0.0418
+        },
+        "local_inpainting": {
+          "sample_count": 5,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "public_realtext_tampered": {
+          "sample_count": 5,
+          "mean_dice": 0.0044,
+          "mean_iou": 0.0022,
+          "mean_precision": 0.2022,
+          "mean_recall": 0.2
+        }
+      }
+    },
+    "DeepLabV3+": {
+      "checkpoint_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\deeplabv3plus_best.pth",
+      "decision_threshold": 0.5,
+      "multiscale_fusion": false,
+      "test_metrics": {
+        "test_dice": 0.5305,
+        "test_iou": 0.4651,
+        "test_precision": 0.8261,
+        "test_recall": 0.5351,
+        "hard_negative_fpr": 0.04,
+        "avg_inference_latency_ms": 9.59
+      },
+      "per_area_bucket_metrics": {
+        "tiny": {
+          "sample_count": 8,
+          "mean_dice": 0.1921,
+          "mean_iou": 0.1132,
+          "mean_precision": 0.3869,
+          "mean_recall": 0.3828
+        },
+        "small": {
+          "sample_count": 52,
+          "mean_dice": 0.3178,
+          "mean_iou": 0.2416,
+          "mean_precision": 0.8003,
+          "mean_recall": 0.3168
+        },
+        "medium": {
+          "sample_count": 28,
+          "mean_dice": 0.5519,
+          "mean_iou": 0.4505,
+          "mean_precision": 0.8802,
+          "mean_recall": 0.4848
+        },
+        "large": {
+          "sample_count": 9,
+          "mean_dice": 0.8009,
+          "mean_iou": 0.7407,
+          "mean_precision": 0.8249,
+          "mean_recall": 0.7968
+        },
+        "authentic": {
+          "sample_count": 25,
+          "mean_dice": 0.96,
+          "mean_iou": 0.96,
+          "mean_precision": 0.96,
+          "mean_recall": 1.0
+        }
+      },
+      "per_category_metrics": {
+        "none": {
+          "sample_count": 25,
+          "mean_dice": 0.96,
+          "mean_iou": 0.96,
+          "mean_precision": 0.96,
+          "mean_recall": 1.0
+        },
+        "text_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.6733,
+          "mean_iou": 0.5486,
+          "mean_precision": 0.733,
+          "mean_recall": 0.6984
+        },
+        "number_amount_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.6453,
+          "mean_iou": 0.507,
+          "mean_precision": 0.7125,
+          "mean_recall": 0.677
+        },
+        "date_replacement": {
+          "sample_count": 14,
+          "mean_dice": 0.3165,
+          "mean_iou": 0.2336,
+          "mean_precision": 0.9212,
+          "mean_recall": 0.2581
+        },
+        "copy_move_intra": {
+          "sample_count": 14,
+          "mean_dice": 0.0609,
+          "mean_iou": 0.0388,
+          "mean_precision": 0.9741,
+          "mean_recall": 0.0421
+        },
+        "copy_paste_inter": {
+          "sample_count": 11,
+          "mean_dice": 0.615,
+          "mean_iou": 0.4815,
+          "mean_precision": 0.881,
+          "mean_recall": 0.5395
+        },
+        "signature_manipulation": {
+          "sample_count": 11,
+          "mean_dice": 0.7785,
+          "mean_iou": 0.6466,
+          "mean_precision": 0.9612,
+          "mean_recall": 0.6682
+        },
+        "photo_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.901,
+          "mean_iou": 0.8333,
+          "mean_precision": 0.928,
+          "mean_recall": 0.8964
+        },
+        "stamp_seal_manipulation": {
+          "sample_count": 8,
+          "mean_dice": 0.29,
+          "mean_iou": 0.1744,
+          "mean_precision": 0.2091,
+          "mean_recall": 0.549
+        },
+        "region_removal": {
+          "sample_count": 5,
+          "mean_dice": 0.0057,
+          "mean_iou": 0.0029,
+          "mean_precision": 0.6633,
+          "mean_recall": 0.003
+        },
+        "local_inpainting": {
+          "sample_count": 5,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "public_realtext_tampered": {
+          "sample_count": 5,
+          "mean_dice": 0.0015,
+          "mean_iou": 0.0007,
+          "mean_precision": 0.2007,
+          "mean_recall": 0.0431
+        }
+      }
+    },
+    "SegFormer-B0": {
+      "checkpoint_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\segformer_best.pth",
+      "decision_threshold": 0.5,
+      "multiscale_fusion": false,
+      "test_metrics": {
+        "test_dice": 0.2627,
+        "test_iou": 0.2567,
+        "test_precision": 0.9892,
+        "test_recall": 0.2666,
+        "hard_negative_fpr": 0.0,
+        "avg_inference_latency_ms": 26.54
+      },
+      "per_area_bucket_metrics": {
+        "tiny": {
+          "sample_count": 8,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "small": {
+          "sample_count": 52,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "medium": {
+          "sample_count": 28,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "large": {
+          "sample_count": 9,
+          "mean_dice": 0.7835,
+          "mean_iou": 0.7021,
+          "mean_precision": 0.8542,
+          "mean_recall": 0.8365
+        },
+        "authentic": {
+          "sample_count": 25,
+          "mean_dice": 1.0,
+          "mean_iou": 1.0,
+          "mean_precision": 1.0,
+          "mean_recall": 1.0
+        }
+      },
+      "per_category_metrics": {
+        "none": {
+          "sample_count": 25,
+          "mean_dice": 1.0,
+          "mean_iou": 1.0,
+          "mean_precision": 1.0,
+          "mean_recall": 1.0
+        },
+        "text_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "number_amount_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "date_replacement": {
+          "sample_count": 14,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "copy_move_intra": {
+          "sample_count": 14,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "copy_paste_inter": {
+          "sample_count": 11,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "signature_manipulation": {
+          "sample_count": 11,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "photo_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.8814,
+          "mean_iou": 0.7899,
+          "mean_precision": 0.8359,
+          "mean_recall": 0.9411
+        },
+        "stamp_seal_manipulation": {
+          "sample_count": 8,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "region_removal": {
+          "sample_count": 5,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "local_inpainting": {
+          "sample_count": 5,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        },
+        "public_realtext_tampered": {
+          "sample_count": 5,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0
+        }
+      }
+    },
+    "Phase 7 Dual-Stream (Locked Baseline)": {
+      "checkpoint_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_best.pth",
+      "decision_threshold": 0.5,
+      "multiscale_fusion": false,
+      "test_metrics": {
+        "test_dice": 0.7137,
+        "test_iou": 0.6553,
+        "test_precision": 0.8629,
+        "test_recall": 0.7257,
+        "hard_negative_fpr": 0.0,
+        "avg_inference_latency_ms": 10.44
+      },
+      "per_area_bucket_metrics": {
+        "tiny": {
+          "sample_count": 8,
+          "mean_dice": 0.2731,
+          "mean_iou": 0.1678,
+          "mean_precision": 0.3365,
+          "mean_recall": 0.26
+        },
+        "small": {
+          "sample_count": 52,
+          "mean_dice": 0.5669,
+          "mean_iou": 0.486,
+          "mean_precision": 0.8475,
+          "mean_recall": 0.594
+        },
+        "medium": {
+          "sample_count": 28,
+          "mean_dice": 0.7777,
+          "mean_iou": 0.7157,
+          "mean_precision": 0.8956,
+          "mean_recall": 0.776
+        },
+        "large": {
+          "sample_count": 9,
+          "mean_dice": 0.9593,
+          "mean_iou": 0.922,
+          "mean_precision": 0.9376,
+          "mean_recall": 0.9824
+        },
+        "authentic": {
+          "sample_count": 25,
+          "mean_dice": 1.0,
+          "mean_iou": 1.0,
+          "mean_precision": 1.0,
+          "mean_recall": 1.0
+        }
+      },
+      "per_category_metrics": {
+        "none": {
+          "sample_count": 25,
+          "mean_dice": 1.0,
+          "mean_iou": 1.0,
+          "mean_precision": 1.0,
+          "mean_recall": 1.0
+        },
+        "text_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.8387,
+          "mean_iou": 0.7289,
+          "mean_precision": 0.7978,
+          "mean_recall": 0.9152
+        },
+        "number_amount_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.7881,
+          "mean_iou": 0.6918,
+          "mean_precision": 0.8387,
+          "mean_recall": 0.8342
+        },
+        "date_replacement": {
+          "sample_count": 14,
+          "mean_dice": 0.8375,
+          "mean_iou": 0.7293,
+          "mean_precision": 0.8253,
+          "mean_recall": 0.8642
+        },
+        "copy_move_intra": {
+          "sample_count": 14,
+          "mean_dice": 0.0101,
+          "mean_iou": 0.0054,
+          "mean_precision": 1.0,
+          "mean_recall": 0.0054
+        },
+        "copy_paste_inter": {
+          "sample_count": 11,
+          "mean_dice": 0.9281,
+          "mean_iou": 0.867,
+          "mean_precision": 0.9075,
+          "mean_recall": 0.9507
+        },
+        "signature_manipulation": {
+          "sample_count": 11,
+          "mean_dice": 0.8842,
+          "mean_iou": 0.7999,
+          "mean_precision": 0.943,
+          "mean_recall": 0.8445
+        },
+        "photo_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.9597,
+          "mean_iou": 0.9227,
+          "mean_precision": 0.939,
+          "mean_recall": 0.9817
+        },
+        "stamp_seal_manipulation": {
+          "sample_count": 8,
+          "mean_dice": 0.3256,
+          "mean_iou": 0.201,
+          "mean_precision": 0.3135,
+          "mean_recall": 0.3685
+        },
+        "region_removal": {
+          "sample_count": 5,
+          "mean_dice": 0.9375,
+          "mean_iou": 0.8826,
+          "mean_precision": 0.9027,
+          "mean_recall": 0.9756
+        },
+        "local_inpainting": {
+          "sample_count": 5,
+          "mean_dice": 0.4554,
+          "mean_iou": 0.3115,
+          "mean_precision": 0.9477,
+          "mean_recall": 0.3172
+        },
+        "public_realtext_tampered": {
+          "sample_count": 5,
+          "mean_dice": 0.0018,
+          "mean_iou": 0.0009,
+          "mean_precision": 0.4009,
+          "mean_recall": 0.0709
+        }
+      }
+    },
+    "Phase 10 High-Res Multi-Scale Model": {
+      "checkpoint_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_best.pth",
+      "decision_threshold": 0.44,
+      "multiscale_fusion": true,
+      "test_metrics": {
+        "test_dice": 0.6382,
+        "test_iou": 0.5848,
+        "test_precision": 0.8532,
+        "test_recall": 0.6613,
+        "hard_negative_fpr": 0.16,
+        "avg_inference_latency_ms": 7.55
+      },
+      "per_area_bucket_metrics": {
+        "tiny": {
+          "sample_count": 8,
+          "mean_dice": 0.0562,
+          "mean_iou": 0.0363,
+          "mean_precision": 0.875,
+          "mean_recall": 0.0363
+        },
+        "small": {
+          "sample_count": 52,
+          "mean_dice": 0.5017,
+          "mean_iou": 0.4208,
+          "mean_precision": 0.8337,
+          "mean_recall": 0.4857
+        },
+        "medium": {
+          "sample_count": 28,
+          "mean_dice": 0.7709,
+          "mean_iou": 0.703,
+          "mean_precision": 0.858,
+          "mean_recall": 0.7635
+        },
+        "large": {
+          "sample_count": 9,
+          "mean_dice": 0.9709,
+          "mean_iou": 0.9435,
+          "mean_precision": 0.9689,
+          "mean_recall": 0.9731
+        },
+        "authentic": {
+          "sample_count": 25,
+          "mean_dice": 0.84,
+          "mean_iou": 0.84,
+          "mean_precision": 0.84,
+          "mean_recall": 1.0
+        }
+      },
+      "per_category_metrics": {
+        "none": {
+          "sample_count": 25,
+          "mean_dice": 0.84,
+          "mean_iou": 0.84,
+          "mean_precision": 0.84,
+          "mean_recall": 1.0
+        },
+        "text_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.8236,
+          "mean_iou": 0.7061,
+          "mean_precision": 0.8274,
+          "mean_recall": 0.8615
+        },
+        "number_amount_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.6717,
+          "mean_iou": 0.5744,
+          "mean_precision": 0.9066,
+          "mean_recall": 0.6396
+        },
+        "date_replacement": {
+          "sample_count": 14,
+          "mean_dice": 0.8002,
+          "mean_iou": 0.676,
+          "mean_precision": 0.8406,
+          "mean_recall": 0.7829
+        },
+        "copy_move_intra": {
+          "sample_count": 14,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 0.7857,
+          "mean_recall": 0.0
+        },
+        "copy_paste_inter": {
+          "sample_count": 11,
+          "mean_dice": 0.8816,
+          "mean_iou": 0.7915,
+          "mean_precision": 0.9284,
+          "mean_recall": 0.8437
+        },
+        "signature_manipulation": {
+          "sample_count": 11,
+          "mean_dice": 0.8931,
+          "mean_iou": 0.8103,
+          "mean_precision": 0.9199,
+          "mean_recall": 0.8807
+        },
+        "photo_replacement": {
+          "sample_count": 8,
+          "mean_dice": 0.9713,
+          "mean_iou": 0.9443,
+          "mean_precision": 0.9709,
+          "mean_recall": 0.9719
+        },
+        "stamp_seal_manipulation": {
+          "sample_count": 8,
+          "mean_dice": 0.0525,
+          "mean_iou": 0.0293,
+          "mean_precision": 0.7363,
+          "mean_recall": 0.0346
+        },
+        "region_removal": {
+          "sample_count": 5,
+          "mean_dice": 0.9382,
+          "mean_iou": 0.8849,
+          "mean_precision": 0.9061,
+          "mean_recall": 0.9756
+        },
+        "local_inpainting": {
+          "sample_count": 5,
+          "mean_dice": 0.2589,
+          "mean_iou": 0.1613,
+          "mean_precision": 0.9872,
+          "mean_recall": 0.1625
+        },
+        "public_realtext_tampered": {
+          "sample_count": 5,
+          "mean_dice": 0.0,
+          "mean_iou": 0.0,
+          "mean_precision": 0.6,
+          "mean_recall": 0.0
+        }
+      }
+    }
+  }
+}

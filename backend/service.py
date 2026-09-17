@@ -25,11 +25,16 @@ if str(PROJECT_ROOT) not in sys.path:
 import torch
 from config import BASE_DIR, CHECKPOINT_DIR, get_target_device
 from src.inference.pipeline import DocForensicsPipeline
+from src.consistency.pipeline import ContentConsistencyPipeline
 from backend.pdf_utils import render_pdf_page_to_rgb, get_pdf_page_count
 from backend.schemas import (
     ForensicAnalysisReport,
     SuspiciousRegionSchema,
     PerformanceLatencySchema,
+    VisualAnalysisSchema,
+    ContentAnalysisSchema,
+    ConsistencyCheckSchema,
+    RecordVerificationSchema,
 )
 
 
@@ -72,6 +77,7 @@ class ForensicService:
         self.checkpoint_path = checkpoint_path or (CHECKPOINT_DIR / "dual_stream_best.pth")
         self.threshold = threshold
         self.pipeline: Optional[DocForensicsPipeline] = None
+        self.consistency_pipeline = ContentConsistencyPipeline()
         self.sessions: Dict[str, AnalysisSession] = {}
         self.temp_dir = Path(tempfile.mkdtemp(prefix="docforensics_web_"))
 
@@ -218,6 +224,59 @@ class ForensicService:
 
         latency_schema = PerformanceLatencySchema(**raw_report["performance_latency"])
 
+        # 6. Run Content Consistency Analysis on OCR detections
+        ocr_entries_raw = raw_report.get("ocr_entries", [])
+        content_res = self.consistency_pipeline.analyze_content(ocr_entries_raw)
+
+        # Build Content Analysis Schema
+        content_checks_schema = [
+            ConsistencyCheckSchema(
+                check_id=c["check_id"],
+                check_name=c["check_name"],
+                displayed_value=str(c.get("displayed_value", "")),
+                calculated_value=str(c.get("calculated_value", "")),
+                status=c["status"],
+                explanation=c["explanation"],
+            )
+            for c in content_res.get("checks", [])
+        ]
+        content_analysis_schema = ContentAnalysisSchema(
+            document_type=content_res["document_type"],
+            document_type_confidence=content_res["document_type_confidence"],
+            status=content_res["status"],
+            summary=content_res["summary"],
+            checks=content_checks_schema,
+            extracted_fields=content_res.get("extracted_fields", {}),
+        )
+
+        # Record Verification Schema
+        rec_ver = content_res.get("record_verification", {})
+        record_verification_schema = RecordVerificationSchema(
+            status=rec_ver.get("status", "not_available"),
+            source=rec_ver.get("source", "Local System"),
+            message=rec_ver.get("message", "No external database configured for this document."),
+            mismatches=rec_ver.get("mismatches", None),
+        )
+
+        # Visual Analysis Schema
+        visual_analysis_schema = VisualAnalysisSchema(
+            analysis_status=raw_report["analysis_status"],
+            suspicious_region_count=raw_report["suspicious_region_count"],
+            highest_tampering_score=raw_report["highest_tampering_score"],
+            total_suspicious_area_percent=raw_report["total_suspicious_area_percent"],
+        )
+
+        # 7. Conservative Status & Assessment Synthesis
+        final_status = raw_report["analysis_status"]
+        final_summary = raw_report["assessment_summary"]
+
+        if content_res["status"] == "content_inconsistency_detected":
+            if final_status == "no_significant_tampering_evidence_detected":
+                final_status = "manual_review_recommended"
+                final_summary = f"Content inconsistency detected: {content_res['summary']} (Visual forensic model detected no pixel-level editing artifacts, characteristic of clean screenshot or Inspect-Element manipulation)."
+            else:
+                final_summary = f"{raw_report['assessment_summary']} Additionally, content inconsistency was detected: {content_res['summary']}"
+
         report = ForensicAnalysisReport(
             session_id=session_id,
             document_id=session_id,
@@ -226,14 +285,17 @@ class ForensicService:
             page_number=page_number,
             total_pages=total_pages,
             timestamp_utc=raw_report["timestamp_utc"],
-            analysis_status=raw_report["analysis_status"],
-            assessment_summary=raw_report["assessment_summary"],
+            analysis_status=final_status,
+            assessment_summary=final_summary,
             model_architecture="dual_stream_rgb_srm_forensic",
             inference_threshold=self.threshold,
             original_resolution=[w0, h0],
             suspicious_region_count=raw_report["suspicious_region_count"],
             total_suspicious_area_percent=raw_report["total_suspicious_area_percent"],
             highest_tampering_score=raw_report["highest_tampering_score"],
+            visual_analysis=visual_analysis_schema,
+            content_analysis=content_analysis_schema,
+            record_verification=record_verification_schema,
             performance_latency=latency_schema,
             suspicious_regions=regions_schema,
             image_url=f"/api/analysis/{session_id}/image",
