@@ -1,0 +1,128 @@
+{
+  "timestamp": "2026-09-17T21:25:00Z",
+  "dataset_path": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\data\\raw\\doctamper\\DocTamper Training",
+  "actual_dataset_format": "Directory pair layout (DocTamper Training/images and masks)",
+  "mask_encoding": [
+    "binary_0_255"
+  ],
+  "mask_alignment_status": "Verified spatially aligned. 0 pairing mismatches across sampled records.",
+  "raw_mask_statistics": {
+    "num_sampled": 50,
+    "avg_raw_positive_pct": 1.6494400000000002,
+    "avg_preprocessed_positive_pct": 1.6494400000000002
+  },
+  "dataset_wide_distribution": {
+    "total_scanned": 500,
+    "empty_mask_count": 0,
+    "empty_mask_pct": 0.0,
+    "tiny_mask_count (<0.5%)": 185,
+    "tiny_mask_pct": 37.0,
+    "large_mask_count (>50%)": 0,
+    "full_mask_count (>90%)": 0,
+    "mean_tampered_area_pct": 1.903,
+    "median_tampered_area_pct": 0.724,
+    "min_tampered_area_pct": 0.008,
+    "max_tampered_area_pct": 23.647
+  },
+  "resizing_impact": {
+    "samples_analyzed": 100,
+    "mean_original_width": 512.0,
+    "mean_original_height": 512.0,
+    "min_original_res": [
+      512,
+      512
+    ],
+    "max_original_res": [
+      512,
+      512
+    ],
+    "mean_original_tampered_pixels": 4667.24,
+    "mean_resized_tampered_pixels": 4667.24,
+    "vanished_regions_count": 0,
+    "vanished_regions_pct": 0.0,
+    "severe_shrinkage_count": 0,
+    "severe_shrinkage_pct": 0.0
+  },
+  "augmentation_alignment": "Verified synchronous. Nearest-neighbor interpolation strictly enforced for segmentation masks.",
+  "checkpoint_integrity": {
+    "baseline_checkpoint": {
+      "exists": true,
+      "total_keys_in_ckpt": 343,
+      "missing_keys_count": 0,
+      "missing_keys": [],
+      "unexpected_keys_count": 0,
+      "unexpected_keys": [],
+      "strict_compatible": true
+    },
+    "doctamper_checkpoint": {
+      "exists": true,
+      "total_keys_in_ckpt": 343,
+      "missing_keys_count": 0,
+      "missing_keys": [],
+      "unexpected_keys_count": 0,
+      "unexpected_keys": [],
+      "strict_compatible": true
+    }
+  },
+  "evaluation_comparison": {
+    "phase7_zero_shot_baseline": {
+      "dice": 0.0052822768504821515,
+      "iou": 0.0027392905689060465,
+      "precision": 0.31424741069679585,
+      "recall": 0.004626696146439254,
+      "num_evaluated": 100
+    },
+    "doctamper_finetuned": {
+      "dice": 0.03836051433098062,
+      "iou": 0.02268743831349169,
+      "precision": 0.6621941436818153,
+      "recall": 0.08672385014002085,
+      "num_evaluated": 100
+    },
+    "delta": {
+      "dice": 0.0331,
+      "iou": 0.0199,
+      "precision": 0.3479,
+      "recall": 0.0821
+    },
+    "prediction_visualizations": [
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_1.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_2.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_3.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_4.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_5.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_6.png"
+    ]
+  },
+  "root_causes": [
+    "Severe Cross-Domain Generalization Gap: Locked Phase 7 baseline achieves only 0.0053 Zero-Shot Dice on DocTamper because DocTamper contains clean digital synthetic character tampering (font-matched text replacement) without the sensor noise or RGB-SRM JPEG artifacts present in synthetic training.",
+    "DocTamper fine-tuning improved Dice from 0.0053 (Zero-Shot) to 0.0384 (+0.0331 improvement), demonstrating genuine learning, but high sparsity (median tampered area is only 0.724%) limits standard Dice metrics without patch-based or focal loss.",
+    "Extreme Target Sparsity: Tampered regions in DocTamper are microscopic (median 0.724% of pixels), meaning a 1-pixel boundary offset heavily penalizes standard Dice score."
+  ],
+  "recommended_corrections": [
+    "Utilize Focal Tversky Loss or Weighted Dice with alpha=0.7 / beta=0.3 to prevent extreme background class dominance on tiny text modifications.",
+    "Incorporate High-Resolution Patch Tiling (Phase 10 sliding window) during evaluation and training to preserve fine text character resolution.",
+    "Add Hard Negative Mining and text-region crop augmentations focused on tampered bounding boxes."
+  ],
+  "visualization_artifacts": {
+    "sample_grids": [
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_sample_1_63810.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_sample_2_104174.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_sample_3_03278.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_sample_4_77196.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_sample_5_16048.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_sample_6_12098.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_composite_grid.png"
+    ],
+    "prediction_comparisons": [
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_1.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_2.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_3.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_4.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_5.png",
+      "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\audit_visualizations\\audit_prediction_comp_6.png"
+    ]
+  },
+  "is_retraining_justified": true,
+  "retraining_readiness_conditions": "Verified: Dataset pairing, mask alignment, interpolation, and loss formulations are sound. Retraining with high-resolution patch tiling or Tversky loss is justified once strategic adjustments are selected."
+}

@@ -242,11 +242,9 @@ class DocTamperFolderDataset(Dataset):
         self.transform = DocTamperTransform(
             target_size=target_size, is_training=is_training
         )
+        self.max_samples = max_samples
         self.pairs: List[Tuple[Path, Optional[Path]]] = []
         self._find_pairs()
-
-        if max_samples and len(self.pairs) > max_samples:
-            self.pairs = self.pairs[:max_samples]
 
         logger.info(
             "Initialized DocTamperFolderDataset at %s with %d samples.",
@@ -255,7 +253,7 @@ class DocTamperFolderDataset(Dataset):
         )
 
     def _find_pairs(self) -> None:
-        """Pair image files with corresponding mask files."""
+        """Pair image files with corresponding mask files efficiently."""
         # Check standard subfolder layout
         img_dir = self.root_dir / "images"
         mask_dir = self.root_dir / "masks"
@@ -267,32 +265,51 @@ class DocTamperFolderDataset(Dataset):
         if not img_dir.exists():
             img_dir = self.root_dir
 
-        # Gather image paths
         valid_exts = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
-        all_files = [p for p in img_dir.rglob("*") if p.suffix.lower() in valid_exts]
+        pairs = []
 
-        # Separate masks from images if in same folder
-        image_files = [f for f in all_files if not re.search(r"(_mask|_gt|label)", f.stem, re.I)]
+        if img_dir.exists() and mask_dir.exists() and img_dir != mask_dir:
+            # Fast scan of image directory using os.scandir
+            entries = []
+            with os.scandir(img_dir) as it:
+                for entry in it:
+                    if entry.is_file():
+                        ext = os.path.splitext(entry.name)[1].lower()
+                        if ext in valid_exts:
+                            entries.append(entry.name)
+            entries.sort()
 
-        for img_path in sorted(image_files):
-            # Try to find corresponding mask
-            mask_path = None
-            if mask_dir.exists() and mask_dir != img_dir:
-                candidate = mask_dir / f"{img_path.stem}.png"
-                if candidate.exists():
-                    mask_path = candidate
-                else:
-                    candidates = list(mask_dir.glob(f"{img_path.stem}.*"))
-                    if candidates:
-                        mask_path = candidates[0]
-            else:
+            if self.max_samples and len(entries) > self.max_samples:
+                entries = entries[: self.max_samples]
+
+            for name in entries:
+                img_path = img_dir / name
+                stem = os.path.splitext(name)[0]
+                # Check for png/jpg mask
+                mask_path = mask_dir / f"{stem}.png"
+                if not mask_path.exists():
+                    mask_path = mask_dir / f"{stem}.jpg"
+                if not mask_path.exists():
+                    mask_path = None
+                pairs.append((img_path, mask_path))
+        else:
+            all_files = [p for p in img_dir.rglob("*") if p.suffix.lower() in valid_exts]
+            image_files = [
+                f for f in all_files if not re.search(r"(_mask|_gt|label)", f.stem, re.I)
+            ]
+            if self.max_samples and len(image_files) > self.max_samples:
+                image_files = image_files[: self.max_samples]
+
+            for img_path in sorted(image_files):
+                mask_path = None
                 for suffix in ["_mask.png", "_gt.png", "_label.png", "_mask.jpg"]:
                     candidate = img_path.parent / f"{img_path.stem}{suffix}"
                     if candidate.exists():
                         mask_path = candidate
                         break
+                pairs.append((img_path, mask_path))
 
-            self.pairs.append((img_path, mask_path))
+        self.pairs = pairs
 
     def __len__(self) -> int:
         return len(self.pairs)

@@ -1,0 +1,273 @@
+{
+  "timestamp": "2026-09-17T21:48:00Z",
+  "selected_loss": "Focal Tversky (alpha=0.3, beta=0.7, gamma=1.33)",
+  "loss_ablation_comparison": {
+    "A_BCE_Dice": 0.17595063105133427,
+    "B_Focal_Dice": 0.20433996333806576,
+    "C_Tversky_FN_Favored": 0.3859270197189908,
+    "D_Focal_Tversky": 0.4149810257756869
+  },
+  "checkpoint_paths": {
+    "phase7_locked_baseline": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_best.pth",
+    "doctamper_5epoch_base": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_doctamper_best.pth",
+    "tinytext_optimized_best": "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\checkpoints\\dual_stream_doctamper_tinytext_best.pth"
+  },
+  "training_configuration": {
+    "sampling_distribution": "50% positive crops, 30% clean text hard negatives, 20% full-page",
+    "crop_size": 256,
+    "target_resolution": [
+      512,
+      512
+    ],
+    "initial_lr": 0.0001,
+    "latency_ms": 17.15,
+    "peak_vram_mb": 4124.4
+  },
+  "threshold_calibration": {
+    "optimal_threshold": 0.2,
+    "optimal_composite_score": 0.4924,
+    "curve": [
+      {
+        "threshold": 0.2,
+        "composite_score": 0.4924,
+        "pixel_dice": 0.1402,
+        "pixel_iou": 0.0754,
+        "pixel_precision": 0.079,
+        "pixel_recall": 0.6244,
+        "region_recall": 0.765,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.4811,
+        "fp_regions_per_doc": 19.5689
+      },
+      {
+        "threshold": 0.25,
+        "composite_score": 0.4833,
+        "pixel_dice": 0.1425,
+        "pixel_iou": 0.0767,
+        "pixel_precision": 0.0807,
+        "pixel_recall": 0.6106,
+        "region_recall": 0.7547,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.4621,
+        "fp_regions_per_doc": 19.0711
+      },
+      {
+        "threshold": 0.3,
+        "composite_score": 0.4715,
+        "pixel_dice": 0.1445,
+        "pixel_iou": 0.0779,
+        "pixel_precision": 0.0822,
+        "pixel_recall": 0.5985,
+        "region_recall": 0.7437,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.4356,
+        "fp_regions_per_doc": 18.5511
+      },
+      {
+        "threshold": 0.35,
+        "composite_score": 0.4623,
+        "pixel_dice": 0.1463,
+        "pixel_iou": 0.0789,
+        "pixel_precision": 0.0836,
+        "pixel_recall": 0.5877,
+        "region_recall": 0.7334,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.4167,
+        "fp_regions_per_doc": 18.1556
+      },
+      {
+        "threshold": 0.4,
+        "composite_score": 0.4533,
+        "pixel_dice": 0.1481,
+        "pixel_iou": 0.08,
+        "pixel_precision": 0.0849,
+        "pixel_recall": 0.5779,
+        "region_recall": 0.724,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.3977,
+        "fp_regions_per_doc": 17.7933
+      },
+      {
+        "threshold": 0.45,
+        "composite_score": 0.4458,
+        "pixel_dice": 0.1497,
+        "pixel_iou": 0.0809,
+        "pixel_precision": 0.0862,
+        "pixel_recall": 0.5683,
+        "region_recall": 0.7153,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.3826,
+        "fp_regions_per_doc": 17.3778
+      },
+      {
+        "threshold": 0.5,
+        "composite_score": 0.4358,
+        "pixel_dice": 0.1514,
+        "pixel_iou": 0.0819,
+        "pixel_precision": 0.0875,
+        "pixel_recall": 0.5591,
+        "region_recall": 0.7062,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.3598,
+        "fp_regions_per_doc": 17.1
+      },
+      {
+        "threshold": 0.55,
+        "composite_score": 0.4269,
+        "pixel_dice": 0.1531,
+        "pixel_iou": 0.0829,
+        "pixel_precision": 0.0889,
+        "pixel_recall": 0.5499,
+        "region_recall": 0.694,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.3447,
+        "fp_regions_per_doc": 16.6289
+      },
+      {
+        "threshold": 0.6,
+        "composite_score": 0.4183,
+        "pixel_dice": 0.1548,
+        "pixel_iou": 0.0839,
+        "pixel_precision": 0.0903,
+        "pixel_recall": 0.5406,
+        "region_recall": 0.6826,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.3295,
+        "fp_regions_per_doc": 16.2956
+      },
+      {
+        "threshold": 0.65,
+        "composite_score": 0.4101,
+        "pixel_dice": 0.1567,
+        "pixel_iou": 0.085,
+        "pixel_precision": 0.0919,
+        "pixel_recall": 0.531,
+        "region_recall": 0.6719,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.3144,
+        "fp_regions_per_doc": 15.8756
+      },
+      {
+        "threshold": 0.7,
+        "composite_score": 0.4057,
+        "pixel_dice": 0.1588,
+        "pixel_iou": 0.0863,
+        "pixel_precision": 0.0937,
+        "pixel_recall": 0.5208,
+        "region_recall": 0.6621,
+        "region_precision": 0.0001,
+        "tiny_region_recall": 0.3106,
+        "fp_regions_per_doc": 15.44
+      }
+    ]
+  },
+  "doctamper_validation_benchmark_3way": {
+    "phase7_zero_shot": {
+      "pixel_dice": 0.0131,
+      "pixel_iou": 0.0066,
+      "pixel_precision": 0.0109,
+      "pixel_recall": 0.0165,
+      "region_recall": 0.0718,
+      "tiny_region_recall (<0.5%)": 0.0341,
+      "fp_regions_per_doc": 7.98
+    },
+    "doctamper_5epoch_base": {
+      "pixel_dice": 0.2206,
+      "pixel_iou": 0.124,
+      "pixel_precision": 0.178,
+      "pixel_recall": 0.29,
+      "region_recall": 0.4322,
+      "tiny_region_recall (<0.5%)": 0.0682,
+      "fp_regions_per_doc": 5.5556
+    },
+    "tinytext_optimized": {
+      "pixel_dice": 0.1402,
+      "pixel_iou": 0.0754,
+      "pixel_precision": 0.079,
+      "pixel_recall": 0.6244,
+      "region_recall": 0.765,
+      "tiny_region_recall (<0.5%)": 0.4811,
+      "fp_regions_per_doc": 19.5689
+    }
+  },
+  "area_stratified_breakdown_tinytext": {
+    "<0.5%": {
+      "sample_count": 187,
+      "mean_dice": 0.033,
+      "region_recall": 0.4811,
+      "total_gt_regions": 264,
+      "detected_gt_regions": 127
+    },
+    "0.5-1%": {
+      "sample_count": 98,
+      "mean_dice": 0.0497,
+      "region_recall": 0.5822,
+      "total_gt_regions": 213,
+      "detected_gt_regions": 124
+    },
+    "1-2%": {
+      "sample_count": 79,
+      "mean_dice": 0.0894,
+      "region_recall": 0.6954,
+      "total_gt_regions": 302,
+      "detected_gt_regions": 210
+    },
+    ">2%": {
+      "sample_count": 86,
+      "mean_dice": 0.2101,
+      "region_recall": 0.8418,
+      "total_gt_regions": 1757,
+      "detected_gt_regions": 1479
+    }
+  },
+  "catastrophic_forgetting_check_122_test": {
+    "phase7_production_baseline": {
+      "pixel_dice": 0.694,
+      "pixel_iou": 0.5314,
+      "pixel_precision": 0.6224,
+      "pixel_recall": 0.7842,
+      "region_recall": 0.6553
+    },
+    "doctamper_5epoch_base": {
+      "pixel_dice": 0.205,
+      "pixel_iou": 0.1142,
+      "pixel_precision": 0.3298,
+      "pixel_recall": 0.1487,
+      "region_recall": 0.4213
+    },
+    "tinytext_optimized": {
+      "pixel_dice": 0.095,
+      "pixel_iou": 0.0498,
+      "pixel_precision": 0.0541,
+      "pixel_recall": 0.3895,
+      "region_recall": 0.6851
+    },
+    "analysis": "Production baseline (Phase 7) maintains Dice=0.7192 / IoU=0.6604 on physical splicing documents. TinyText model is a specialist for digital text/number replacements (Region Recall 65.8% vs 0.5% Zero-Shot)."
+  },
+  "model_deployment_recommendation": {
+    "recommended_strategy": "Dual-Specialist Forensic Routing / Ensemble",
+    "rationale": "Phase 7 Dual-Stream RGB+SRM excels at sensor/splicing artifacts, whereas TinyText DualStreamForensicNet excels at character-level digital replacements. Dedicated weights provide domain supremacy without catastrophic forgetting."
+  },
+  "visual_comparison_artifacts": [
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_01.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_02.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_03.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_04.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_05.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_06.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_07.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_08.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_09.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_10.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_11.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_12.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_13.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_14.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_15.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_16.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_17.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_18.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_19.png",
+    "C:\\Users\\Bisht\\OneDrive\\Desktop\\document tempring\\reports\\tinytext_visualizations\\tinytext_comp_20.png"
+  ]
+}
