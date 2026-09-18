@@ -1,31 +1,31 @@
 {
-  "dataset_path": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmpegzfuj58",
+  "dataset_path": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmp0s86pybv",
   "total_epochs": 1,
   "batch_size": 2,
   "initial_lr": 0.001,
   "pretrained_source": "None",
-  "best_checkpoint": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmpegzfuj58\\test_out_best.pth",
-  "best_val_dice": 0.3651698028417277,
-  "total_duration_sec": 4.686977386474609,
+  "best_checkpoint": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmp0s86pybv\\test_out_best.pth",
+  "best_val_dice": 2.473472012602996e-11,
+  "total_duration_sec": 11.632236957550049,
   "history": [
     {
       "epoch": 1,
       "train": {
-        "dice": 0.2807097632145003,
-        "iou": 0.16441713684114367,
-        "precision": 0.19282918377834396,
-        "recall": 0.5197562500060031,
-        "loss": 0.7060058116912842
+        "dice": 0.2975307352818389,
+        "iou": 0.17547713562068784,
+        "precision": 0.18660566426608077,
+        "recall": 0.7841437500026982,
+        "loss": 0.7542174756526947
       },
       "val": {
-        "dice": 0.3651698028417277,
-        "iou": 0.2233686431081248,
-        "precision": 0.365014737489009,
-        "recall": 0.3653250000158669,
-        "loss": 0.6964080929756165
+        "dice": 2.473472012602996e-11,
+        "iou": 2.473472012602996e-11,
+        "precision": 2.331002325568759e-09,
+        "recall": 2.4999999999374998e-11,
+        "loss": 0.6938875913619995
       },
       "lr": 1e-06,
-      "duration": 3.6555588245391846
+      "duration": 10.859033346176147
     }
   ]
 }
