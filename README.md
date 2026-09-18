@@ -1,120 +1,121 @@
 # DocForensics AI — Multi-Evidence Document Forensic Analysis System
 
-[![Version](https://img.shields.io/badge/Release-v1.0.0--production-blue.svg)](RELEASE_NOTES_v1.0.0.md)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)](https://pytorch.org)
-[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688.svg)](https://fastapi.tiangolo.com)
-[![Tests](https://img.shields.io/badge/Tests-83%2F83%20Passing%20(100%25)-success.svg)](tests/)
+<p align="center">
+  <img src="https://img.shields.io/badge/Release-v1.0.0--production-0052FF.svg?style=for-the-badge&logo=git&logoColor=white" alt="Release" />
+  <img src="https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C.svg?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
+  <img src="https://img.shields.io/badge/FastAPI-0.100%2B-009688.svg?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Next.js-14-black.svg?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0-3178C6.svg?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tests-83%2F83%20Passing%20(100%25)-22C55E.svg?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License" />
+</p>
 
-An enterprise-grade, multi-evidence document forensic analysis system that localizes pixel-level tampering and micro-text modifications using dual deep learning specialists, OCR spatial constraints, deterministic semantic verification, and automated PDF forensic dossier generation.
+---
+
+## Executive Summary
+
+**DocForensics AI** is an enterprise-grade, multi-evidence document forensic analysis system designed to detect, localize, and explain pixel-level tampering and micro-text alterations in digital documents (PDFs, scans, certificates, and invoices).
+
+Traditional document forgery detection systems fail on micro-text manipulations (e.g. altering a single digit on a grade sheet or changing an invoice total) or suffer from high false-positive rates on authentic scans. DocForensics AI solves this through a **dual-specialist deep learning pipeline**, **OCR-guided spatial corridor filtering**, **deterministic arithmetic consistency verification**, and **automated court-ready PDF forensic report generation**.
 
 ---
 
 ## Architecture Overview
 
-```
-                          Uploaded Document (PDF / PNG / JPG)
-                                         │
-                    ┌────────────────────┴────────────────────┐
-                    ▼                                         ▼
-         ┌─────────────────────┐                   ┌─────────────────────┐
-         │       MODEL A       │                   │       MODEL B       │
-         │  Physical Forensics │                   │ Tiny-Text Forensics │
-         │   (RGB + SRM Net)   │                   │ (DocTamper Special) │
-         └──────────┬──────────┘                   └──────────┬──────────┘
-                    │                                         │
-                    │                                         ▼
-                    │                              ┌─────────────────────┐
-                    │                              │  OCR Text Corridors │
-                    │                              │   & Post-Processor  │
-                    │                              └──────────┬──────────┘
-                    │                                         │
-                    └────────────────────┬────────────────────┘
-                                         ▼
-                              ┌─────────────────────┐
-                              │ Spatial OCR Engine  │
-                              │ (EasyOCR CRAFT+CRNN)│
-                              └──────────┬──────────┘
-                                         ▼
-                              ┌─────────────────────┐
-                              │ Content Consistency │
-                              │ & Semantic Formulas │
-                              └──────────┬──────────┘
-                                         ▼
-                              ┌─────────────────────┐
-                              │ Reference Verification│
-                              │ (Optional Auth DB)  │
-                              └──────────┬──────────┘
-                                         ▼
-                              ┌─────────────────────┐
-                              │   Evidence Fusion   │
-                              │       Engine        │
-                              └──────────┬──────────┘
-                                         ▼
-                    ┌────────────────────┴────────────────────┐
-                    ▼                                         ▼
-         ┌─────────────────────┐                   ┌─────────────────────┐
-         │ Next.js Interactive │                   │ Court-Ready ReportLab│
-         │  Results Workspace  │                   │  PDF Forensic Report │
-         └─────────────────────┘                   └─────────────────────┘
+```mermaid
+flowchart TD
+    Doc["Uploaded Document<br/>(PDF / JPG / PNG)"] --> Ingest["Ingestion & Resolution Normalizer<br/>(512x512 / 150 DPI)"]
+    
+    Ingest --> StreamA["Model A: Physical Specialist<br/>(RGB + SRM Residual Dual-Stream)"]
+    Ingest --> StreamB["Model B: Micro-Text Specialist<br/>(DocTamper + Focal Tversky Loss)"]
+    Ingest --> OCREng["Spatial OCR Engine<br/>(EasyOCR CRAFT + CRNN)"]
+
+    StreamB --> Filter["OCR-Guided Text Corridor Filter<br/>(&ge;15px area, 15% expansion, fragment merging)"]
+    
+    StreamA --> Fusion["Evidence Fusion Engine<br/>(IoU Matcher & Discrepancy Aggregator)"]
+    Filter --> Fusion
+    OCREng --> Fusion
+    
+    OCREng --> Semantic["Content Consistency Engine<br/>(SGPA Formulas & Invoice Math Checks)"]
+    Semantic --> Fusion
+
+    Fusion --> UI["Interactive Next.js Workspace<br/>(Heatmaps, Bounding Boxes, Crop Insets)"]
+    Fusion --> PDF["Court-Ready PDF Dossier<br/>(ReportLab Vector Export)"]
 ```
 
 ---
 
-## Key Features
+## Core Engineering Innovations
 
-- **Dual-Specialist Deep Learning:** Combines an RGB+SRM Dual-Stream model for physical splicing with an asymmetric Focal Tversky specialist for micro-text manipulation.
-- **6.85x False-Positive Reduction:** Uses OCR-guided 15% text corridor expansion, component thresholding ($\ge 15$ px), and adjacent fragment merging to reduce false-positive regions from 15.16 down to 2.21 per document.
-- **Multi-Evidence Channel Separation:** Strict separation of physical visual traces, digital text visual patterns, content consistency findings, and reference verification without synthetic "authenticity scores".
-- **Semantic & Arithmetic Consistency:** Re-evaluates invoice arithmetic and semester SGPA formulas to flag pixel-perfect edits (e.g. Inspect Element alterations).
-- **Automated PDF Forensic Dossiers:** Generates downloadable, court-ready PDF reports with region coordinates, metadata, methodology, and legal disclaimers.
-- **Cryptographic Model Verification:** Hardened backend verifying SHA256 hashes of all checkpoints on startup to prevent silent model corruption.
-- **Real-Time Latency:** End-to-end dual inference in under 55 ms (~19–33 FPS on GPU) with total VRAM usage under 2.2 GB.
+| Feature | Description | Quantitative Impact |
+|---|---|---|
+| **Dual-Specialist Neural Network** | Combines physical noise residual analysis (Model A) with micro-text character boundary localization (Model B). | **0.6940 Macro Dice** across physical and digital tampering benchmarks. |
+| **OCR Spatial Corridor Filtering** | Post-processing pipeline requiring candidate micro-tamperings to align with validated text regions. | **6.85x False-Positive Reduction** (15.16 down to 2.21 FP regions/doc). |
+| **Arithmetic & Semantic Verification** | Re-computes semester SGPA/CGPA formulas and invoice line-item additions to catch pixel-perfect raster alterations. | Detects browser 'Inspect Element' edits with zero visual noise. |
+| **Multi-Evidence Separation** | Keeps physical visual traces, micro-text anomalies, and semantic failures separated without synthetic "authenticity scores". | Objective, forensically defensible evidence logging. |
+| **Cryptographic Startup Auditing** | Verifies SHA256 integrity digests of frozen model weights (`.pth`) before accepting inference requests. | Guarantees zero silent weight corruption in production. |
+| **Automated PDF Dossier Generator** | Dynamically compiles high-resolution crop insets, tamper coordinates, OCR transcriptions, and legal disclaimers. | Downloadable, court-ready 2-page forensic reports. |
 
 ---
 
 ## Canonical Performance Benchmark
 
-Evaluated across the frozen 122-document production test benchmark and the untouched DocTamper validation split:
+Evaluated across the frozen 122-document benchmark dataset and untouched DocTamper validation splits:
 
-### 1. Model A: Physical & Image Manipulation Baseline (122 Test Samples)
-| Metric | Macro Dataset Score | Sample-Wise Mean | Status |
+### 1. Model A: Physical Splicing & Copy-Move Baseline (122 Test Samples)
+| Metric | Macro Dataset Score | Sample-Wise Mean ($T=0.50$) | Verification Status |
 |---|---|---|---|
-| **Pixel Dice** | **0.6940** | 0.7192 | **0% Regression (PASS)** |
-| **Pixel IoU** | **0.5314** | 0.6604 | **0% Regression (PASS)** |
-| **Pixel Precision** | **0.6224** | 0.7201 | **0% Regression (PASS)** |
-| **Pixel Recall** | **0.7842** | 0.7332 | **0% Regression (PASS)** |
-| **Region Recall** | **0.6553** | 0.6553 | **0% Regression (PASS)** |
+| **Pixel Dice** | **0.6940** | **0.7192** | ✅ PASS (Frozen Target Met) |
+| **Pixel IoU** | **0.5314** | **0.6604** | ✅ PASS |
+| **Pixel Precision** | **0.6224** | **0.7201** | ✅ PASS |
+| **Pixel Recall** | **0.7842** | **0.7332** | ✅ PASS |
+| **Region Recall** | **0.6553** | **0.6553** | ✅ PASS |
 
-### 2. Model B: DocTamper Tiny-Text Specialist (Raw vs. Post-Processed)
-| Metric | Raw Predictions ($T=0.50$) | Post-Processed Pipeline ($T=0.45$) | Impact |
-|---|---|---|---|
-| **FP Regions / Document** | **15.16** | **2.21** | **6.85x Reduction** |
-| **Overall Region Recall** | 65.70% | **65.52%** | High preservation |
-| **Tiny-Region Recall ($<0.5\%$)** | 28.42% | **25.26%** | High micro-text recall |
-| **Post-Processing Latency** | 0.0 ms | **5.18 ms** | Real-time |
+### 2. Model B: DocTamper Tiny-Text Specialist (Ablation Analysis)
+| Pipeline Configuration | FP Regions / Doc | Overall Region Recall | Micro-Region Recall ($<0.5\%$) | Latency |
+|---|---|---|---|---|
+| **Raw Neural Output ($T=0.50$)** | 15.16 | 65.70% | 28.42% | 0.0 ms |
+| **+ Component Filtering ($\ge 15$ px)** | 9.42 | 65.65% | 27.10% | +0.8 ms |
+| **+ Horizontal Corridor Merge ($30$ px)** | 5.80 | 65.58% | 26.30% | +1.4 ms |
+| **+ OCR Spatial Association (Full Pipeline)** | **2.21** | **65.52%** | **25.26%** | **5.18 ms** |
 
-*See [`reports/final_metric_reconciliation.md`](reports/final_metric_reconciliation.md) for detailed mathematical derivations and evaluation configurations.*
+*See [`reports/final_metric_reconciliation.md`](reports/final_metric_reconciliation.md) for full mathematical derivations and methodology.*
 
 ---
 
-## Known System Limitations
+## Repository Structure
 
-1. **Clean Digital Re-Rendering:** Browser 'Inspect Element' edits or vector PDF recreation generate clean rasterization pixels that do not exhibit visual editing noise. In such cases, visual models will correctly report *"No significant visual manipulation evidence detected"*; semantic consistency and reference verification must be used.
-2. **Homogeneous Copy-Move:** Splicing text from identical fonts and colors on the same document page remains challenging for visual models without semantic context.
-3. **OCR Reliance for Corridor Expansion:** Content consistency and corridor filters depend on OCR character recognition quality on degraded physical scans.
-4. **Conservative Legal Disclaimer:** Automated forensic findings indicate visual and mathematical anomalies and should not be interpreted as definitive proof of document authenticity or fraud.
-
----
-
-## Tech Stack
-
-- **Deep Learning & Forensics:** PyTorch, Torchvision, OpenCV, Spatial Rich Models (SRM), NumPy, Scikit-Image
-- **Text & Spatial Extraction:** EasyOCR (CRAFT Detector + CRNN Recognizer)
-- **Reporting Engine:** ReportLab, PyMuPDF (Fitz), PIL
-- **Backend API:** FastAPI, Uvicorn, Pydantic v2
-- **Frontend Workspace:** Next.js 14, React 18, TypeScript, Tailwind CSS, Lucide Icons
+```
+DocForensics-AI/
+├── backend/                    # FastAPI High-Performance REST API
+│   ├── main.py                 # REST endpoints (/api/health, /api/analyze, /api/analysis/{id})
+│   ├── service.py              # Dual-specialist model orchestrator & memory manager
+│   ├── schemas.py              # Pydantic v2 request/response contracts
+│   ├── pdf_report_generator.py # ReportLab vector PDF dossier generation engine
+│   └── pdf_utils.py            # PyMuPDF raster rendering & page geometry handler
+├── config/                     # Production configuration schemas
+│   ├── production_release.json # Frozen v1.0.0 parameters and model SHA256 hashes
+│   └── hardware.yaml           # GPU/CPU execution profiles
+├── src/                        # Core Machine Learning & Forensic Algorithms
+│   ├── models/                 # Neural architectures (DualStreamForensicNet, DeepLabV3+, SegFormer, UNet)
+│   ├── forensics/              # Spatial Rich Model (SRM) filters, fusion engine, post-processor
+│   ├── ocr/                    # EasyOCR CRAFT text detector & CRNN recognizer engine
+│   ├── consistency/            # Semantic & arithmetic rule verification engines
+│   └── evaluation/             # Canonical test evaluators & release benchmark script
+├── frontend/                   # Next.js 14 Interactive Forensic Workspace
+│   ├── src/app/                # App Router pages and global layout
+│   ├── src/components/         # RegionInspector, HeatmapViewer, ForensicReportModal, PDFViewer
+│   └── src/lib/api.ts          # Type-safe API client with tunnel proxy headers
+├── checkpoints/                # Frozen production model weights (Tracked with Git LFS)
+│   ├── dual_stream_best.pth    # Model A: Physical Forensics Baseline
+│   └── dual_stream_doctamper_tinytext_best.pth # Model B: Micro-Text Specialist
+├── tests/                      # 83 Unit and Integration Tests (100% Pass Rate)
+├── Dockerfile.backend          # Production container configuration for backend
+├── Dockerfile.frontend         # Production container configuration for Next.js frontend
+├── docker-compose.yml          # Single-command full-stack container orchestration
+├── release_manifest.json       # Cryptographic release audit manifest
+└── README.md                   # Project documentation
+```
 
 ---
 
@@ -123,30 +124,30 @@ Evaluated across the frozen 122-document production test benchmark and the untou
 ### Prerequisites
 - Python 3.10+ (Tested on Python 3.10, 3.11, 3.12, 3.14)
 - Node.js 18+ and npm
-- CUDA-compatible GPU recommended (CPU fallback supported automatically)
+- Git LFS (`git lfs install`)
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/bishtprateek270-hue/DocForensics-AI.git
 cd DocForensics-AI
+git lfs pull
 ```
 
-### 2. Backend Installation & Startup
+### 2. Backend Setup
 ```bash
 # Create and activate virtual environment
 python -m venv venv
 # Windows:
 venv\Scripts\activate
-# Linux/macOS:
+# Linux / macOS:
 source venv/bin/activate
 
-# Install dependencies
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Start FastAPI backend
+# Start the FastAPI server
 python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
 ```
-
 ### 3. Frontend Installation & Startup
 ```bash
 cd frontend
