@@ -89,11 +89,10 @@ data/test/*
 !data/test/.gitkeep
 !data/metadata.csv
 !data/dataset_summary.json
-checkpoints/
-*.pth
-*.pt
-*.onnx
-*.engine
+checkpoints/*
+!checkpoints/.gitkeep
+!checkpoints/dual_stream_best.pth
+!checkpoints/dual_stream_doctamper_tinytext_best.pth
 logs/
 runs/
 wandb/
