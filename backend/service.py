@@ -53,6 +53,23 @@ from backend.schemas import (
 )
 
 
+import hashlib
+
+EXPECTED_HASH_A = "376b074999a95c37a33cd0ca9295532ec4b96936919fc84982c4a7230f456d15"
+EXPECTED_HASH_B = "58d1456efba3e141041c74ebe392e39339715512155549f3e0bc0eb5249b8238"
+
+
+def compute_sha256(filepath: Path) -> str:
+    """Compute SHA256 digest of a checkpoint file."""
+    if not filepath.exists():
+        return ""
+    sha = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        while chunk := f.read(65536):
+            sha.update(chunk)
+    return sha.hexdigest()
+
+
 class AnalysisSession:
     """Holds artifacts and structured data for a single document analysis session."""
 
@@ -119,27 +136,45 @@ class ForensicService:
         return cls._instance
 
     def initialize(self):
-        """Pre-loads Model A, Model B, and OCR Engine into memory at startup."""
+        """Pre-loads Model A, Model B, and OCR Engine into memory at startup with integrity checks."""
         if self.model_a_physical is None:
             print("[*] Initializing Dual-Specialist Forensic Pipeline...")
-            
+
+            # Verify Model A SHA256
+            if not self.ckpt_p7_path.exists():
+                raise FileNotFoundError(f"Model A checkpoint not found at: {self.ckpt_p7_path}")
+            hash_a = compute_sha256(self.ckpt_p7_path)
+            if hash_a != EXPECTED_HASH_A:
+                raise RuntimeError(
+                    f"Model A integrity verification FAILED! Expected {EXPECTED_HASH_A[:12]}..., got {hash_a[:12]}..."
+                )
+            print(f"[+] Model A SHA256 verified ({hash_a[:12]}...).")
+
+            # Verify Model B SHA256
+            if not self.ckpt_tt_path.exists():
+                raise FileNotFoundError(f"Model B checkpoint not found at: {self.ckpt_tt_path}")
+            hash_b = compute_sha256(self.ckpt_tt_path)
+            if hash_b != EXPECTED_HASH_B:
+                raise RuntimeError(
+                    f"Model B integrity verification FAILED! Expected {EXPECTED_HASH_B[:12]}..., got {hash_b[:12]}..."
+                )
+            print(f"[+] Model B SHA256 verified ({hash_b[:12]}...).")
+
             # 1. Load Model A (Phase 7 Physical Forensics Baseline)
-            print(f"[*] Loading Model A (Physical Forensics) from {self.ckpt_p7_path}...")
+            print("[*] Loading Model A (Physical Forensics)...")
             self.model_a_physical = DualStreamForensicNet(pretrained_backbone=False)
-            if self.ckpt_p7_path.exists():
-                ckpt_a = torch.load(str(self.ckpt_p7_path), map_location="cpu", weights_only=False)
-                state_dict_a = ckpt_a.get("model_state_dict", ckpt_a)
-                self.model_a_physical.load_state_dict(state_dict_a, strict=False)
+            ckpt_a = torch.load(str(self.ckpt_p7_path), map_location="cpu", weights_only=False)
+            state_dict_a = ckpt_a.get("model_state_dict", ckpt_a)
+            self.model_a_physical.load_state_dict(state_dict_a, strict=False)
             self.model_a_physical.to(self.device)
             self.model_a_physical.eval()
 
             # 2. Load Model B (DocTamper Tiny-Text Digital Specialist)
-            print(f"[*] Loading Model B (Tiny-Text Forensics) from {self.ckpt_tt_path}...")
+            print("[*] Loading Model B (Tiny-Text Forensics)...")
             self.model_b_tinytext = DualStreamForensicNet(pretrained_backbone=False)
-            if self.ckpt_tt_path.exists():
-                ckpt_b = torch.load(str(self.ckpt_tt_path), map_location="cpu", weights_only=False)
-                state_dict_b = ckpt_b.get("model_state_dict", ckpt_b)
-                self.model_b_tinytext.load_state_dict(state_dict_b, strict=False)
+            ckpt_b = torch.load(str(self.ckpt_tt_path), map_location="cpu", weights_only=False)
+            state_dict_b = ckpt_b.get("model_state_dict", ckpt_b)
+            self.model_b_tinytext.load_state_dict(state_dict_b, strict=False)
             self.model_b_tinytext.to(self.device)
             self.model_b_tinytext.eval()
 
@@ -154,7 +189,7 @@ class ForensicService:
                 tinytext_postprocessor=self.tinytext_postprocessor,
                 iou_fusion_threshold=0.20,
             )
-            print("[+] Dual-Specialist Forensic Pipeline initialized successfully.")
+            print("[+] Dual-Specialist Forensic Pipeline initialized and verified successfully.")
 
     def process_document(
         self,

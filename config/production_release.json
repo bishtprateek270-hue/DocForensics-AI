@@ -1,0 +1,43 @@
+{
+  "release_version": "1.0.0",
+  "project_name": "DocForensics AI",
+  "release_stage": "production_frozen",
+  "models": {
+    "model_A_physical": {
+      "name": "Phase 7 RGB + SRM Dual-Stream Forensic Baseline",
+      "checkpoint_relative_path": "checkpoints/dual_stream_best.pth",
+      "sha256_hash": "376b074999a95c37a33cd0ca9295532ec4b96936919fc84982c4a7230f456d15",
+      "input_resolution": [512, 512],
+      "inference_threshold": 0.50,
+      "purpose": "Physical/image forensic manipulation evidence (photos, signatures, stamps, copy-move, splicing, sensor noise)"
+    },
+    "model_B_tinytext": {
+      "name": "DocTamper Tiny-Text Digital Specialist",
+      "checkpoint_relative_path": "checkpoints/dual_stream_doctamper_tinytext_best.pth",
+      "sha256_hash": "58d1456efba3e141041c74ebe392e39339715512155549f3e0bc0eb5249b8238",
+      "input_resolution": [512, 512],
+      "inference_threshold": 0.45,
+      "purpose": "Digital tiny-text manipulation evidence (numbers, dates, amounts, micro-text edits)"
+    }
+  },
+  "postprocessing_parameters": {
+    "tinytext_min_component_area": 15,
+    "ocr_expansion_ratio": 0.15,
+    "max_ocr_distance": 35.0,
+    "merge_horizontal_distance": 30,
+    "merge_vertical_distance": 10,
+    "require_ocr_association": true,
+    "iou_fusion_threshold": 0.20
+  },
+  "ocr_configuration": {
+    "engine": "EasyOCR",
+    "detector": "CRAFT",
+    "recognizer": "CRNN",
+    "languages": ["en"],
+    "confidence_threshold": 0.40
+  },
+  "supported_file_types": ["JPG", "JPEG", "PNG", "PDF"],
+  "maximum_upload_size_bytes": 15728640,
+  "inference_mode": "torch.inference_mode_with_amp",
+  "disclaimer": "Forensic findings indicate visual and mathematical anomalies and must not be interpreted as definitive proof of document authenticity or fraud."
+}

@@ -132,14 +132,9 @@ class ForensicAnalysisReport(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str = Field(default="healthy", description="API health status")
-    version: str = Field(default="2.0.0", description="DocForensics AI API version")
-    cuda_available: bool = Field(..., description="Whether CUDA is active")
-    gpu_name: str = Field(..., description="NVIDIA GPU model name")
-    vram_total_gb: float = Field(..., description="Total GPU VRAM in GB")
-    vram_allocated_mb: float = Field(..., description="Currently allocated VRAM in MB")
-    model_checkpoint_loaded: str = Field(..., description="Active checkpoint name")
-    ocr_engine: str = Field(default="EasyOCR (CRAFT + CRNN with PyTorch CUDA)", description="Active OCR engine")
-    content_consistency_engine: str = Field(default="Active (Deterministic Rules & Layout Extractor)", description="Content engine status")
+    models_ready: bool = Field(default=True, description="Whether dual forensic specialists are initialized")
+    ocr_ready: bool = Field(default=True, description="Whether OCR pipeline is active")
+    version: str = Field(default="1.0.0", description="DocForensics AI production version")
 
 
 class ErrorResponse(BaseModel):

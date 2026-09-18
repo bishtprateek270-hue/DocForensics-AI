@@ -1,31 +1,31 @@
 {
-  "dataset_path": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmp63okxjm3",
+  "dataset_path": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmpegzfuj58",
   "total_epochs": 1,
   "batch_size": 2,
   "initial_lr": 0.001,
   "pretrained_source": "None",
-  "best_checkpoint": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmp63okxjm3\\test_out_best.pth",
-  "best_val_dice": 0.2647744122032382,
-  "total_duration_sec": 4.276514530181885,
+  "best_checkpoint": "C:\\Users\\Bisht\\AppData\\Local\\Temp\\tmpegzfuj58\\test_out_best.pth",
+  "best_val_dice": 0.3651698028417277,
+  "total_duration_sec": 4.686977386474609,
   "history": [
     {
       "epoch": 1,
       "train": {
-        "dice": 0.2977910052734409,
-        "iou": 0.17576982670262475,
-        "precision": 0.18682837078904735,
-        "recall": 0.7494750000031316,
-        "loss": 0.7458553612232208
+        "dice": 0.2807097632145003,
+        "iou": 0.16441713684114367,
+        "precision": 0.19282918377834396,
+        "recall": 0.5197562500060031,
+        "loss": 0.7060058116912842
       },
       "val": {
-        "dice": 0.2647744122032382,
-        "iou": 0.1525878906282326,
-        "precision": 0.1525878906282326,
-        "recall": 1.0,
-        "loss": 1.0252046585083008
+        "dice": 0.3651698028417277,
+        "iou": 0.2233686431081248,
+        "precision": 0.365014737489009,
+        "recall": 0.3653250000158669,
+        "loss": 0.6964080929756165
       },
       "lr": 1e-06,
-      "duration": 3.4012622833251953
+      "duration": 3.6555588245391846
     }
   ]
 }

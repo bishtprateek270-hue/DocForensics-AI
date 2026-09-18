@@ -108,13 +108,9 @@ export interface ForensicReport {
 
 export interface HealthResponse {
   status: string;
+  models_ready: boolean;
+  ocr_ready: boolean;
   version: string;
-  cuda_available: boolean;
-  gpu_name: string;
-  vram_total_gb: number;
-  vram_allocated_mb: number;
-  model_checkpoint_loaded: string;
-  ocr_engine: string;
 }
 
 export interface ErrorResponse {

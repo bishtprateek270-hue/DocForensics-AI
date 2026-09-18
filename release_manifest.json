@@ -1,0 +1,50 @@
+{
+  "project_version": "1.0.0",
+  "release_timestamp_utc": "2026-09-18T03:48:09.776497Z",
+  "checkpoint_hashes": {
+    "model_A_physical": "376b074999a95c37a33cd0ca9295532ec4b96936919fc84982c4a7230f456d15",
+    "model_B_tinytext": "58d1456efba3e141041c74ebe392e39339715512155549f3e0bc0eb5249b8238"
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python_version": "3.14.6",
+    "pytorch_version": "2.11.0+cu128",
+    "cuda_available": true,
+    "device": "cuda"
+  },
+  "production_thresholds": {
+    "model_A_physical": 0.5,
+    "model_B_tinytext": 0.45,
+    "iou_fusion_threshold": 0.2
+  },
+  "postprocessing_parameters": {
+    "min_component_area": 15,
+    "ocr_expansion_ratio": 0.15,
+    "max_ocr_distance": 35.0,
+    "merge_horizontal_distance": 30,
+    "merge_vertical_distance": 10
+  },
+  "benchmark_summary": {
+    "model_A_phase7_physical_122_samples": {
+      "pixel_dice": 0.694,
+      "pixel_iou": 0.5314,
+      "pixel_precision": 0.6224,
+      "pixel_recall": 0.7842,
+      "region_recall": 0.6553
+    },
+    "model_B_tinytext_validation_raw": {
+      "region_recall": 0.657,
+      "tiny_region_recall": 0.2842,
+      "fp_regions_per_doc": 15.16,
+      "pixel_dice": 0.1369
+    },
+    "model_B_tinytext_validation_postprocessed": {
+      "region_recall": 0.6552,
+      "tiny_region_recall": 0.2526,
+      "fp_regions_per_doc": 2.35,
+      "fp_reduction_factor": 6.45,
+      "postprocessing_latency_ms": 4.74
+    }
+  },
+  "test_suite_status": "83/83 PASSED (100%)"
+}

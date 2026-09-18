@@ -90,20 +90,16 @@ def validate_file_bytes(content: bytes, filename: str) -> str:
 
 @app.get("/api/health", response_model=HealthResponse, tags=["System"])
 async def get_health_status():
-    """Returns real-time system, GPU, VRAM, and model status."""
-    diag = get_hardware_diagnostics()
-    vram = get_vram_usage()
-    ckpt_path = CHECKPOINT_DIR / "dual_stream_best.pth"
+    """Returns safe, production-grade health and readiness status."""
+    service = ForensicService.get_instance()
+    models_ready = bool(service.model_a_physical is not None and service.model_b_tinytext is not None)
+    ocr_ready = bool(service.ocr_engine is not None)
 
     return HealthResponse(
-        status="healthy" if ckpt_path.exists() else "model_unavailable",
-        version="1.1.0",
-        cuda_available=diag["cuda_available"],
-        gpu_name=diag["gpu_name"] if diag["cuda_available"] else "CPU",
-        vram_total_gb=vram.get("total_gb", 0.0),
-        vram_allocated_mb=vram.get("allocated_mb", 0.0),
-        model_checkpoint_loaded=ckpt_path.name if ckpt_path.exists() else "None",
-        ocr_engine="EasyOCR (CRAFT + CRNN with PyTorch CUDA)",
+        status="healthy" if (models_ready and ocr_ready) else "degraded",
+        models_ready=models_ready,
+        ocr_ready=ocr_ready,
+        version="1.0.0",
     )
 
 

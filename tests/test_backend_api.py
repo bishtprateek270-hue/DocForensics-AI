@@ -28,16 +28,18 @@ def client():
 
 
 def test_health_endpoint(client):
-    """Verify /api/health returns 200 with model, GPU, and OCR info."""
+    """Verify /api/health returns 200 with sanitized production readiness status."""
     response = client.get("/api/health")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
-    assert "cuda_available" in data
-    assert "gpu_name" in data
-    assert "vram_total_gb" in data
-    assert "model_checkpoint_loaded" in data
-    assert "EasyOCR" in data["ocr_engine"]
+    assert data["models_ready"] is True
+    assert data["ocr_ready"] is True
+    assert data["version"] == "1.0.0"
+    # Ensure no internal filesystem paths or GPU hardware details are exposed
+    assert "gpu_name" not in data
+    assert "cuda_version" not in data
+    assert "checkpoint_path" not in data
 
 
 def test_analyze_valid_image(client):

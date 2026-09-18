@@ -100,7 +100,9 @@ wandb/
 reports/*
 !reports/.gitkeep
 !reports/*.json
+!reports/*.md
 !reports/**/*.json
+!reports/**/*.md
 !reports/phase11/*
 outputs/*
 !outputs/.gitkeep
