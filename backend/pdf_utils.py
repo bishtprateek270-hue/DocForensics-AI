@@ -6,7 +6,7 @@ Preserves page geometry and coordinate mappings for the downstream Phase 8 foren
 
 import io
 from typing import Tuple, List, Optional
-import fitz  # PyMuPDF
+import pymupdf as fitz
 import numpy as np
 from PIL import Image
 

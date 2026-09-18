@@ -53,7 +53,11 @@ from backend.schemas import (
 )
 
 
+import gc
 import hashlib
+
+# Optimize PyTorch CPU memory usage for containerized environments
+torch.set_num_threads(1)
 
 EXPECTED_HASH_A = "376b074999a95c37a33cd0ca9295532ec4b96936919fc84982c4a7230f456d15"
 EXPECTED_HASH_B = "58d1456efba3e141041c74ebe392e39339715512155549f3e0bc0eb5249b8238"
@@ -135,8 +139,16 @@ class ForensicService:
             cls._instance = ForensicService()
         return cls._instance
 
+    def get_ocr_engine_instance(self):
+        """Lazy-loads OCR engine on demand to conserve startup memory."""
+        if self.ocr_engine is None:
+            print("[*] Initializing OCR Engine on demand...")
+            self.ocr_engine = get_ocr_engine(use_gpu=(self.device.type == "cuda"))
+            gc.collect()
+        return self.ocr_engine
+
     def initialize(self):
-        """Pre-loads Model A, Model B, and OCR Engine into memory at startup with integrity checks."""
+        """Pre-loads Model A and Model B into memory at startup with integrity checks."""
         if self.model_a_physical is None:
             print("[*] Initializing Dual-Specialist Forensic Pipeline...")
 
@@ -168,6 +180,8 @@ class ForensicService:
             self.model_a_physical.load_state_dict(state_dict_a, strict=False)
             self.model_a_physical.to(self.device)
             self.model_a_physical.eval()
+            del ckpt_a, state_dict_a
+            gc.collect()
 
             # 2. Load Model B (DocTamper Tiny-Text Digital Specialist)
             print("[*] Loading Model B (Tiny-Text Forensics)...")
@@ -177,12 +191,10 @@ class ForensicService:
             self.model_b_tinytext.load_state_dict(state_dict_b, strict=False)
             self.model_b_tinytext.to(self.device)
             self.model_b_tinytext.eval()
+            del ckpt_b, state_dict_b
+            gc.collect()
 
-            # 3. Load OCR Engine
-            print("[*] Initializing OCR Engine...")
-            self.ocr_engine = get_ocr_engine(use_gpu=(self.device.type == "cuda"))
-
-            # 4. Instantiate Evidence Fusion Engine
+            # 3. Instantiate Evidence Fusion Engine
             self.fusion_engine = EvidenceFusionEngine(
                 model_a_physical=self.model_a_physical,
                 model_b_tinytext=self.model_b_tinytext,
@@ -224,8 +236,9 @@ class ForensicService:
         # 2. OCR Execution
         t_ocr_start = time.perf_counter()
         ocr_entries = []
-        if self.ocr_engine is not None:
-            ocr_entries, _ = self.ocr_engine.extract_text(img_rgb)
+        ocr_engine = self.get_ocr_engine_instance()
+        if ocr_engine is not None:
+            ocr_entries, _ = ocr_engine.extract_text(img_rgb)
         t_ocr_ms = (time.perf_counter() - t_ocr_start) * 1000.0
 
         # Format OCR results for post-processor and consistency engine

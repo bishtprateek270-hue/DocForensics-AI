@@ -93,7 +93,9 @@ async def get_health_status():
     """Returns safe, production-grade health and readiness status."""
     service = ForensicService.get_instance()
     models_ready = bool(service.model_a_physical is not None and service.model_b_tinytext is not None)
-    ocr_ready = bool(service.ocr_engine is not None)
+    
+    from src.ocr.ocr_engine import EASYOCR_AVAILABLE
+    ocr_ready = bool(EASYOCR_AVAILABLE or service.ocr_engine is not None)
 
     return HealthResponse(
         status="healthy" if (models_ready and ocr_ready) else "degraded",
